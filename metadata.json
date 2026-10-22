@@ -1,0 +1,6 @@
+{
+  "name": "CamZone-EG | كاميرات مراقبة وتركيب",
+  "description": "المنصة الذكية المتكاملة لحساب وتصميم ومحاكاة باقات كاميرات المراقبة في مصر مع المصمم ثلاثي الأبعاد ووضع الفني",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
