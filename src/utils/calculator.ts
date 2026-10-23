@@ -1,4 +1,4 @@
-import { CalculatorState, QuoteResult, QuoteLine, LensType, LensConfig } from '../types';
+import { CalculatorState, QuoteResult, QuoteLine, LensType, LensConfig, CameraResolution } from '../types';
 
 export const LENS_CONFIGS: Record<LensType, LensConfig> = {
   '2.8': { fov: 90, len: 6, desc: 'عدسة عريضة 2.8 مم (زاوية 90°) - مثالية للمساحات المفتوحة والغرف' },
@@ -91,8 +91,8 @@ export function calculateQuote(state: CalculatorState): QuoteResult {
   const camUnitCost = pricingGroup.cam[state.res] || 500;
   const channels = getChannelCount(state.cams);
   const recorderUnitCost = isIP
-    ? pricingGroup.nvr[channels as keyof typeof pricingGroup.nvr] || 2000
-    : pricingGroup.dvr[channels as keyof typeof pricingGroup.dvr] || 1500;
+    ? brandData.ip.nvr[channels as keyof typeof brandData.ip.nvr] || 2000
+    : brandData.analog.dvr[channels as keyof typeof brandData.analog.dvr] || 1500;
 
   const recorderName = isIP ? `جهاز تسجيل NVR شبكي (${channels} قناة)` : `جهاز تسجيل DVR (${channels} قناة)`;
   const camName = `كاميرا ${brandData.name.split(' ')[0]} ${state.res} ${isIP ? 'IP' : 'HD'}`;

@@ -60,6 +60,7 @@ export const Surveillance3D: React.FC<Surveillance3DProps> = ({ onSyncToCalculat
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [cameraPovModal, setCameraPovModal] = useState<{ open: boolean; nightVision: boolean; lens: LensType } | null>(null);
   const [hintText, setHintText] = useState<string>('اضغط على أي عنصر لتحديده أو اختر أداة من الشريط');
+  const [webglError, setWebglError] = useState<string | null>(null);
 
   // Stats
   const [stats, setStats] = useState({
@@ -186,12 +187,19 @@ export const Surveillance3D: React.FC<Surveillance3DProps> = ({ onSyncToCalculat
     cameraRef.current = camera;
     updateCameraPosition();
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = false;
-    containerRef.current.replaceChildren(renderer.domElement);
-    rendererRef.current = renderer;
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'default' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = false;
+      containerRef.current.replaceChildren(renderer.domElement);
+      rendererRef.current = renderer;
+    } catch (err: any) {
+      console.warn('WebGL init error:', err);
+      setWebglError('محرك الرسوميات ثلاثي الأبعاد يتطلب تفعيل تسريع الرسوميات (WebGL) في متصفحك.');
+      return;
+    }
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
@@ -242,7 +250,7 @@ export const Surveillance3D: React.FC<Surveillance3DProps> = ({ onSyncToCalculat
     return () => {
       window.removeEventListener('resize', handleResize);
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      renderer.dispose();
+      if (renderer) renderer.dispose();
     };
   }, [updateCameraPosition]);
 
@@ -689,16 +697,29 @@ export const Surveillance3D: React.FC<Surveillance3DProps> = ({ onSyncToCalculat
 
       {/* Main 3D Canvas Stage */}
       <div className="relative w-full h-[360px] sm:h-[440px] bg-[#07080b]">
-        <div
-          ref={containerRef}
-          onClick={handleCanvasClick}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onWheel={handleWheel}
-          style={{ touchAction: touchUnlocked ? 'none' : 'pan-y' }}
-          className="w-full h-full cursor-grab active:cursor-grabbing"
-        />
+        {webglError ? (
+          <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-slate-300 space-y-3 bg-[#090b10]">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
+              <Layers className="w-6 h-6" />
+            </div>
+            <h4 className="font-bold text-white text-sm">وضع المخطط الهندسي (2D Mode)</h4>
+            <p className="text-xs text-slate-400 max-w-md">{webglError}</p>
+            <p className="text-[11px] text-amber-300">
+              يمكنك استخدام حاسبة الباقات ومتجر المنتجات المعتمدة وكافة الأدوات بشكل كامل وسلس.
+            </p>
+          </div>
+        ) : (
+          <div
+            ref={containerRef}
+            onClick={handleCanvasClick}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onWheel={handleWheel}
+            style={{ touchAction: touchUnlocked ? 'none' : 'pan-y' }}
+            className="w-full h-full cursor-grab active:cursor-grabbing"
+          />
+        )}
 
         {/* Live HUD Floating Card */}
         <div className="absolute top-3 left-3 right-3 sm:right-auto sm:max-w-md pointer-events-none">

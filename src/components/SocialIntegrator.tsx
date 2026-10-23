@@ -50,7 +50,11 @@ export const SocialIntegrator: React.FC = () => {
   }, []);
 
   const handleCopyPhone = () => {
-    navigator.clipboard.writeText(OFFICIAL_CHANNELS.phone);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(OFFICIAL_CHANNELS.phone).catch(() => {});
+      }
+    } catch (e) {}
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

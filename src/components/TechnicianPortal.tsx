@@ -133,7 +133,11 @@ export const TechnicianPortal: React.FC<TechnicianPortalProps> = ({ onApplicatio
   };
 
   const handleCopySql = () => {
-    navigator.clipboard.writeText(SUPABASE_RLS_POLICIES_SQL);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(SUPABASE_RLS_POLICIES_SQL).catch(() => {});
+      }
+    } catch (e) {}
     setCopiedSql(true);
     setTimeout(() => setCopiedSql(false), 2000);
   };
