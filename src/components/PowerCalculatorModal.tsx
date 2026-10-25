@@ -17,10 +17,12 @@ export const PowerCalculatorModal: React.FC<PowerCalculatorModalProps> = ({
 }) => {
   const [cams, setCams] = useState<number>(defaultCams);
   const [avgMeters, setAvgMeters] = useState<number>(defaultAvgMeters);
+  const [wireGauge, setWireGauge] = useState<number>(0.75);
+  const [copperType, setCopperType] = useState<'pure' | 'cca'>('pure');
 
   if (!isOpen) return null;
 
-  const result = calculatePowerSupply(cams, avgMeters);
+  const result = calculatePowerSupply(cams, avgMeters, wireGauge, copperType, 1.2);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
@@ -71,6 +73,34 @@ export const PowerCalculatorModal: React.FC<PowerCalculatorModalProps> = ({
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-slate-400 mb-1">مقطع السلك النحاسي:</label>
+              <select
+                value={wireGauge}
+                onChange={(e) => setWireGauge(parseFloat(e.target.value))}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-bold text-xs"
+              >
+                <option value={0.5}>0.5 مم² (اقتصادي)</option>
+                <option value={0.75}>0.75 مم² (قياسي)</option>
+                <option value={1.0}>1.0 مم² (نحاس معتمد)</option>
+                <option value={1.5}>1.5 مم² (مسافات طويلة)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-slate-400 mb-1">خامة النحاس:</label>
+              <select
+                value={copperType}
+                onChange={(e) => setCopperType(e.target.value as 'pure' | 'cca')}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-bold text-xs"
+              >
+                <option value="pure">نحاس نقي 100% (السويدي)</option>
+                <option value="cca">تجاري / نحاس مكسو ألمنيوم (CCA)</option>
+              </select>
+            </div>
+          </div>
+
           {/* Results Summary Box */}
           <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
             <div className="flex items-center justify-between">
@@ -89,6 +119,15 @@ export const PowerCalculatorModal: React.FC<PowerCalculatorModalProps> = ({
               <span>معامل الأمان الإضافي (Safety Margin):</span>
               <span className="text-emerald-400 font-bold">+30% حماية من ارتفاع الحمل</span>
             </div>
+
+            {result.calculatedVoltageDrop !== undefined && (
+              <div className="flex items-center justify-between text-slate-400 border-t border-slate-900 pt-2 font-mono">
+                <span>هبوط الجهد المتوقع:</span>
+                <span className={result.isSafe ? "text-cyan-400 font-bold" : "text-rose-400 font-bold"}>
+                  ΔV = {result.calculatedVoltageDrop}V (يصل للكاميرا: {result.terminalVoltage}V)
+                </span>
+              </div>
+            )}
 
             <div
               className={`p-3 rounded-xl border text-xs flex items-start gap-2.5 ${

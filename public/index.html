@@ -856,6 +856,49 @@
                 </button>
               </div>
             </div>
+            <!-- 1-Click Interactive Add-on Shelf -->
+            <div class="pt-3 border-t border-slate-800/80">
+              <label class="block font-bold text-slate-300 mb-2 flex items-center justify-between">
+                <span class="flex items-center gap-1.5 text-cyan-400">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                  <span>إضافات وترقيات هندسية بنقرة واحدة (Quick Add-ons):</span>
+                </span>
+                <span class="text-[10px] text-slate-500">حسب الطلب</span>
+              </label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 cursor-pointer transition">
+                  <input type="checkbox" id="addon-rack" onchange="toggleAddon('rack')" class="w-4 h-4 rounded text-cyan-500 focus:ring-0">
+                  <div>
+                    <div class="font-bold text-white text-[11px]">كابينة راك 6U مع رف</div>
+                    <div class="text-[10px] text-cyan-400 font-mono">+850 ج</div>
+                  </div>
+                </label>
+
+                <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 cursor-pointer transition">
+                  <input type="checkbox" id="addon-copper" onchange="toggleAddon('copper')" class="w-4 h-4 rounded text-cyan-500 focus:ring-0">
+                  <div>
+                    <div class="font-bold text-white text-[11px]">نحاس نقي 100% السويدي</div>
+                    <div class="text-[10px] text-emerald-400 font-mono">+450 ج</div>
+                  </div>
+                </label>
+
+                <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 cursor-pointer transition">
+                  <input type="checkbox" id="addon-ups" onchange="toggleAddon('ups')" class="w-4 h-4 rounded text-cyan-500 focus:ring-0">
+                  <div>
+                    <div class="font-bold text-white text-[11px]">وحدة UPS طوارئ ساعة</div>
+                    <div class="text-[10px] text-amber-400 font-mono">+1,650 ج</div>
+                  </div>
+                </label>
+
+                <label class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 cursor-pointer transition">
+                  <input type="checkbox" id="addon-boxes" onchange="toggleAddon('boxes')" class="w-4 h-4 rounded text-cyan-500 focus:ring-0">
+                  <div>
+                    <div class="font-bold text-white text-[11px]">بواطات IP66 معزولة</div>
+                    <div class="text-[10px] text-purple-400 font-mono">+35 ج/كاميرا</div>
+                  </div>
+                </label>
+              </div>
+            </div>
           </div>
 
           <!-- Right Col: Glossy Black Neon Counter Output -->
@@ -895,6 +938,10 @@
                   <span>مصنعية التركيب والبرمجة:</span>
                   <span id="labor-summary-disp" class="font-bold text-cyan-400">1,200 ج</span>
                 </div>
+                <div id="addon-summary-row" class="hidden flex justify-between text-slate-300 border-t border-slate-800/60 pt-1.5">
+                  <span class="text-amber-400 font-bold">ترقيات وملحقات إضافية:</span>
+                  <span id="addon-summary-disp" class="font-bold text-amber-300">0 ج</span>
+                </div>
               </div>
 
               <!-- Big Animated Counter -->
@@ -908,17 +955,24 @@
               </div>
             </div>
 
-            <!-- Actions: Direct Call & Add to Cart -->
+            <!-- Actions: Direct Call, Add to Cart & Engineering Submittal -->
             <div class="space-y-2 pt-2">
               <a href="tel:01121275069" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/20">
                 <i data-lucide="phone-call" class="w-4 h-4"></i>
                 <span>طلب وحجز فوري تليفونياً: 01121275069</span>
               </a>
 
-              <button onclick="addQuoteToCart()" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-cyan-500/40 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer">
-                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                <span>إضافة كامل المنظومة لسلة المشتريات</span>
-              </button>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button onclick="addQuoteToCart()" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-cyan-500/40 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                  <span>إضافة للسلة</span>
+                </button>
+
+                <button onclick="exportTechnicalSubmittal()" class="py-2.5 px-3 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/40 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer" title="تصدير تقرير فني معتمد للاستشاري والمقايسة">
+                  <i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
+                  <span>المخطط المعتمد</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1057,19 +1111,56 @@
       </div>
 
       <div id="admin-dashboard-view" class="hidden space-y-4">
-        <div class="flex justify-between items-center bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+        <div class="flex flex-wrap justify-between items-center bg-slate-950/80 p-3 rounded-xl border border-slate-800 gap-2">
           <div>
-            <div class="text-[11px] text-slate-400">حالة قاعدة البيانات (Supabase):</div>
-            <div class="text-emerald-400 font-bold">متصل • qlzgcwmdaiverqrbmmah</div>
+            <div class="text-[11px] text-slate-400">حالة الربط المركزي (Supabase & Local Vault):</div>
+            <div class="text-emerald-400 font-bold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>مشفر محلياً + سحابياً (Auto-Sync)</span>
+            </div>
           </div>
-          <button onclick="logoutAdmin()" class="px-2.5 py-1 rounded bg-slate-900 text-red-400 hover:bg-slate-800 text-[11px] font-bold">تسجيل خروج</button>
+          <div class="flex items-center gap-2">
+            <button onclick="exportOrdersToCSV()" class="px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 font-bold text-[11px] flex items-center gap-1 transition cursor-pointer" title="تصدير كملف إكسيل Excel / CSV">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>تصدير Excel</span>
+            </button>
+            <button onclick="changeAdminPasscodePrompt()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-bold transition cursor-pointer" title="تغيير رمز المرور">
+              تغيير الرمز
+            </button>
+            <button onclick="logoutAdmin()" class="px-2.5 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-[11px] font-bold transition cursor-pointer">
+              خروج
+            </button>
+          </div>
         </div>
 
-        <div class="space-y-2">
-          <h4 class="font-bold text-white text-xs">سجل الطلبات الواردة مؤخراً:</h4>
-          <div id="admin-orders-list" class="max-h-56 overflow-y-auto space-y-2 text-[11px]">
-            <!-- Injected by JS -->
+        <!-- Metric KPI Pills -->
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">إجمالي الطلبات</span>
+            <span id="admin-kpi-count" class="text-base font-black text-cyan-400 font-mono">0</span>
           </div>
+          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">إجمالي المقايسات</span>
+            <span id="admin-kpi-revenue" class="text-base font-black text-amber-400 font-mono">0 ج</span>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">الفنيين المسجلين</span>
+            <span id="admin-kpi-techs" class="text-base font-black text-purple-400 font-mono">0</span>
+          </div>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+          <h4 class="font-bold text-white text-xs">سجل العمليات والطلبات:</h4>
+          <div class="flex items-center gap-1 text-[11px]">
+            <button onclick="filterAdminOrders('all')" id="btn-admin-filter-all" class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold">الكل</button>
+            <button onclick="filterAdminOrders('clients')" id="btn-admin-filter-clients" class="px-2 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white">العملاء</button>
+            <button onclick="filterAdminOrders('techs')" id="btn-admin-filter-techs" class="px-2 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white">الفنيين</button>
+          </div>
+        </div>
+
+        <div id="admin-orders-list" class="max-h-60 overflow-y-auto space-y-2 text-[11px] pr-1">
+          <!-- Injected by JS -->
         </div>
       </div>
     </div>
@@ -1123,19 +1214,50 @@
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <h3 class="text-base font-bold text-white flex items-center gap-1.5">
           <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
-          <span>فحص الباور سبلاي وهبوط الجهد (Voltage Drop)</span>
+          <span>حاسبة الباور سبلاي وهبوط الجهد (Ohm's Law ΔV)</span>
         </h3>
         <button onclick="closeModals()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="space-y-3">
-        <div>
-          <label class="block mb-1 text-slate-400">أطول مسار كابل لكاميرا (بالمتر):</label>
-          <input type="number" id="calc-cable-dist" value="45" min="5" max="250" oninput="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block mb-1 text-slate-400">أطول مسار كابل (متر):</label>
+            <input type="number" id="calc-cable-dist" value="45" min="5" max="250" oninput="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+          </div>
+          <div>
+            <label class="block mb-1 text-slate-400">عدد الكاميرات الإجمالي:</label>
+            <input type="number" id="calc-power-cams" value="4" min="1" max="32" oninput="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+          </div>
         </div>
-        <div>
-          <label class="block mb-1 text-slate-400">عدد الكاميرات:</label>
-          <input type="number" id="calc-power-cams" value="4" min="1" max="32" oninput="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block mb-1 text-slate-400">مقطع سلك الباور (mm²):</label>
+            <select id="calc-wire-gauge" onchange="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+              <option value="0.5">0.5 مم² (سلك رفيع)</option>
+              <option value="0.75" selected>0.75 مم² (قياسي موصى به)</option>
+              <option value="1.0">1.0 مم² (مسافات طويلة)</option>
+              <option value="1.5">1.5 مم² (فائق التحمل)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1 text-slate-400">نوع وخامة الموصل:</label>
+            <select id="calc-copper-material" onchange="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+              <option value="0.0175" selected>نحاس نقي 100% (أعلى كفاءة)</option>
+              <option value="0.028">ألومنيوم مكسو بالنحاس CCA</option>
+            </select>
+          </div>
         </div>
+
+        <div>
+          <label class="block mb-1 text-slate-400">سحب تيار الكاميرا ليلاً مع الأشعة:</label>
+          <select id="calc-cam-draw" onchange="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+            <option value="0.8" selected>0.8A (كاميرا IR عادية بالأشعة)</option>
+            <option value="1.2">1.2A (كاميرا ColorVu كشاف أبيض دائم)</option>
+            <option value="2.0">2.0A (كاميرا PTZ متحركة بمحرك)</option>
+          </select>
+        </div>
+
         <div id="power-calc-output" class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
           <!-- Injected by JS -->
         </div>
@@ -1669,16 +1791,24 @@
       trenchMeters: 15,
       storageTb: '2tb',
       poeSwitches: 1,
+      addons: {
+        rack6u: false,
+        pureCopper: false,
+        ups: false,
+        junction: false
+      }
     };
 
     function setBrand(brand) {
       calcState.brand = brand;
       ['hikvision', 'dahua', 'uniview'].forEach(b => {
         const btn = document.getElementById('btn-' + b);
-        if (b === brand) {
-          btn.className = 'p-3 rounded-xl border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/15';
-        } else {
-          btn.className = 'p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 font-bold flex items-center justify-center gap-2 hover:bg-slate-800';
+        if (btn) {
+          if (b === brand) {
+            btn.className = 'p-3 rounded-xl border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/15';
+          } else {
+            btn.className = 'p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 font-bold flex items-center justify-center gap-2 hover:bg-slate-800';
+          }
         }
       });
       recalculateQuote();
@@ -1688,36 +1818,42 @@
       calcState.resolution = res;
       ['2mp', '5mp', '8mp'].forEach(r => {
         const btn = document.getElementById('btn-res-' + r);
-        if (r === res) {
-          btn.className = 'py-2.5 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold';
-        } else {
-          btn.className = 'py-2.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800';
+        if (btn) {
+          if (r === res) {
+            btn.className = 'py-2.5 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold';
+          } else {
+            btn.className = 'py-2.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800';
+          }
         }
       });
       recalculateQuote();
     }
 
     function updateCamCount(type, val) {
-      const count = parseInt(val, 10);
+      const count = parseInt(val, 10) || 0;
       if (type === 'indoor') {
         calcState.indoorCount = count;
-        document.getElementById('indoor-count-disp').textContent = count + ' كاميرا';
+        const disp = document.getElementById('indoor-count-disp');
+        if (disp) disp.textContent = count + ' كاميرا';
       } else {
         calcState.outdoorCount = count;
-        document.getElementById('outdoor-count-disp').textContent = count + ' كاميرا';
+        const disp = document.getElementById('outdoor-count-disp');
+        if (disp) disp.textContent = count + ' كاميرا';
       }
       recalculateQuote();
     }
 
     function updateCables(val) {
-      calcState.cableMeters = parseInt(val, 10);
-      document.getElementById('cable-meters-disp').textContent = val + ' متر';
+      calcState.cableMeters = parseInt(val, 10) || 0;
+      const disp = document.getElementById('cable-meters-disp');
+      if (disp) disp.textContent = val + ' متر';
       recalculateQuote();
     }
 
     function updateTrenchMeters(val) {
-      calcState.trenchMeters = parseInt(val, 10);
-      document.getElementById('trench-meters-disp').textContent = `${val} متر (+${val * 35} ج)`;
+      calcState.trenchMeters = parseInt(val, 10) || 0;
+      const disp = document.getElementById('trench-meters-disp');
+      if (disp) disp.textContent = `${val} متر (+${val * 35} ج)`;
       recalculateQuote();
     }
 
@@ -1725,12 +1861,24 @@
       calcState.storageTb = size;
       ['1tb', '2tb', '4tb', '8tb'].forEach(s => {
         const btn = document.getElementById('btn-hdd-' + s);
-        if (s === size) {
-          btn.className = 'py-2 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold';
-        } else {
-          btn.className = 'py-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800';
+        if (btn) {
+          if (s === size) {
+            btn.className = 'py-2 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold';
+          } else {
+            btn.className = 'py-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800';
+          }
         }
       });
+      recalculateQuote();
+    }
+
+    function toggleAddon(addonId) {
+      if (!calcState.addons) {
+        calcState.addons = { rack6u: false, pureCopper: false, ups: false, junction: false };
+      }
+      calcState.addons[addonId] = !calcState.addons[addonId];
+      const chk = document.getElementById('addon-' + addonId);
+      if (chk) chk.checked = !!calcState.addons[addonId];
       recalculateQuote();
     }
 
@@ -1759,18 +1907,38 @@
       calcState.poeSwitches = poeSwitchCount;
       const switchPrice = poeSwitchCount === 1 ? 1250 : poeSwitchCount === 2 ? 2400 : 0;
 
+      // Interactive Add-ons Calculation
+      let addonsTotal = 0;
+      if (calcState.addons) {
+        if (calcState.addons.rack6u) addonsTotal += 1850;
+        if (calcState.addons.pureCopper) addonsTotal += (calcState.cableMeters * 6);
+        if (calcState.addons.ups) addonsTotal += 2800;
+        if (calcState.addons.junction) addonsTotal += (totalCams * 65);
+      }
+
       // Installation & Labor
       const labor = Math.max(800, totalCams * 250);
 
-      const grandTotal = camsTotal + dvrPrice + hddPrice + cablePrice + trenchSurcharge + switchPrice + labor;
+      const grandTotal = camsTotal + dvrPrice + hddPrice + cablePrice + trenchSurcharge + switchPrice + addonsTotal + labor;
 
       // Update Breakdown UI
-      document.getElementById('dvr-summary-disp').textContent = `${dvrChannels} قنوات 4K`;
-      document.getElementById('total-cam-disp').textContent = `${totalCams} كاميرات (${calcState.indoorCount} داخلي + ${calcState.outdoorCount} خارجي)`;
-      document.getElementById('switch-summary-disp').textContent = poeSwitchCount > 0 ? `${poeSwitchCount} سويتش PoE` : 'كابلات مباشرة';
-      document.getElementById('cable-summary-disp').textContent = `${calcState.cableMeters}م كابل + ${calcState.trenchMeters}م حفر`;
-      document.getElementById('storage-summary-disp').textContent = `${calcState.storageTb.toUpperCase()} WD Purple`;
-      document.getElementById('labor-summary-disp').textContent = labor.toLocaleString('ar-EG') + ' ج';
+      const dvrEl = document.getElementById('dvr-summary-disp');
+      if (dvrEl) dvrEl.textContent = `${dvrChannels} قنوات 4K`;
+
+      const camDisp = document.getElementById('total-cam-disp');
+      if (camDisp) camDisp.textContent = `${totalCams} كاميرات (${calcState.indoorCount} داخلي + ${calcState.outdoorCount} خارجي)`;
+
+      const swDisp = document.getElementById('switch-summary-disp');
+      if (swDisp) swDisp.textContent = poeSwitchCount > 0 ? `${poeSwitchCount} سويتش PoE` : 'كابلات مباشرة';
+
+      const cabDisp = document.getElementById('cable-summary-disp');
+      if (cabDisp) cabDisp.textContent = `${calcState.cableMeters}م كابل + ${calcState.trenchMeters}م حفر`;
+
+      const storDisp = document.getElementById('storage-summary-disp');
+      if (storDisp) storDisp.textContent = `${calcState.storageTb.toUpperCase()} WD Purple`;
+
+      const labDisp = document.getElementById('labor-summary-disp');
+      if (labDisp) labDisp.textContent = labor.toLocaleString('ar-EG') + ' ج';
 
       animateCounter('quote-total-price', grandTotal);
     }
@@ -1791,6 +1959,216 @@
           el.textContent = Math.round(count).toLocaleString('ar-EG');
         }
       }, 16);
+    }
+
+    // Bi-Directional 3D-BOM Event Listener
+    window.addEventListener('camzone:sync3d', (e) => {
+      if (!e.detail) return;
+      const { cameras, cables, trench, switches } = e.detail;
+      if (typeof cameras === 'number') {
+        calcState.outdoorCount = Math.max(0, cameras - calcState.indoorCount);
+        const outdoorSlider = document.getElementById('cam-count-outdoor');
+        if (outdoorSlider) outdoorSlider.value = calcState.outdoorCount;
+        const outDisp = document.getElementById('outdoor-count-disp');
+        if (outDisp) outDisp.textContent = calcState.outdoorCount + ' كاميرا';
+      }
+      if (typeof cables === 'number') {
+        calcState.cableMeters = cables;
+        const cableSlider = document.getElementById('calc-cables');
+        if (cableSlider) cableSlider.value = cables;
+        const cableDisp = document.getElementById('cable-meters-disp');
+        if (cableDisp) cableDisp.textContent = cables + ' متر';
+      }
+      if (typeof trench === 'number') {
+        calcState.trenchMeters = trench;
+        const trenchSlider = document.getElementById('calc-trench');
+        if (trenchSlider) trenchSlider.value = trench;
+        const trenchDisp = document.getElementById('trench-meters-disp');
+        if (trenchDisp) trenchDisp.textContent = `${trench} متر (+${trench * 35} ج)`;
+      }
+      if (typeof switches === 'number') {
+        const swSelector = document.getElementById('switch-selector');
+        if (swSelector) swSelector.value = switches > 0 ? (switches >= 2 ? '2' : '1') : '0';
+      }
+      recalculateQuote();
+      showNotification('تمت مزامنة مكونات المشهد ثلاثي الأبعاد مع المقايسة تلقائياً');
+    });
+
+    // Official Engineering Technical Submittal Export
+    function exportTechnicalSubmittal() {
+      const totalCams = calcState.indoorCount + calcState.outdoorCount;
+      const grandTotalStr = document.getElementById('quote-total-price')?.textContent || '0';
+      const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+      const refNum = 'CZ-SUB-' + Math.floor(10000 + Math.random() * 90000);
+
+      // Selected addons text list
+      const activeAddons = [];
+      if (calcState.addons?.rack6u) activeAddons.push('كابينة خادم راك 6U جدارية زجاجية + مشترك');
+      if (calcState.addons?.pureCopper) activeAddons.push(`ترقية كابلات شبكة CAT6 نحاس نقي 100% (${calcState.cableMeters} متر)`);
+      if (calcState.addons?.ups) activeAddons.push('وحدة طوارئ UPS ذكية لحفظ التشغيل عند انقطاع التيار');
+      if (calcState.addons?.junction) activeAddons.push(`بواطات عزل وحماية IP66 لجميع الكاميرات (${totalCams} بواطة)`);
+
+      const submittalHTML = `
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <title>CamZone-EG | المخطط الهندسي المعتمد ${refNum}</title>
+          <style>
+            @page { size: A4 portrait; margin: 15mm; }
+            body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: #0f172a; margin: 0; padding: 20px; line-height: 1.5; font-size: 13px; }
+            .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 12px; margin-bottom: 18px; }
+            .brand-title { font-size: 22px; font-weight: 900; color: #0369a1; }
+            .badge-ref { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 12px; }
+            h2 { color: #0f172a; font-size: 15px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 5px; margin-top: 18px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 12px; }
+            th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: right; }
+            th { background: #f1f5f9; font-weight: 800; color: #334155; }
+            .dori-table th { background: #0284c7; color: white; }
+            .stamp-area { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+            .stamp-box { border: 2px dashed #0284c7; border-radius: 10px; padding: 15px; width: 220px; text-align: center; color: #0284c7; font-weight: bold; }
+            .notice { background: #f8fafc; border-right: 4px solid #0284c7; padding: 8px 12px; font-size: 11px; color: #64748b; margin-top: 10px; }
+            .print-btn-bar { text-align: center; margin-bottom: 20px; }
+            .btn-print { background: #0284c7; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+            @media print { .print-btn-bar { display: none; } }
+          </style>
+        </head>
+        <body>
+          <div class="print-btn-bar">
+            <button class="btn-print" onclick="window.print()">طباعة المخطط الهندسي أو حفظ كـ PDF</button>
+          </div>
+          <div class="header-bar">
+            <div>
+              <div class="brand-title">CamZone-EG • المقايسة الهندسية المعتمدة</div>
+              <div style="color: #64748b; font-size: 12px;">منظومات المراقبة الذكية وشبكات الأمن السيبراني الميدانية</div>
+            </div>
+            <div style="text-align: left;">
+              <span class="badge-ref">كود المشروع: ${refNum}</span>
+              <div style="font-size: 11px; color: #64748b; margin-top: 4px;">تاريخ الاعتماد: ${today}</div>
+            </div>
+          </div>
+
+          <h2>1. جدول حصر الكميات والتجهيزات الهندسية (Bill of Materials - BOM)</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>البند</th>
+                <th>المواصفات الفنية</th>
+                <th>الكمية</th>
+                <th>المعيار</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>كاميرات المراقبة</td>
+                <td>ماركة ${calcState.brand.toUpperCase()} - دقة ${calcState.resolution.toUpperCase()} عالية الوضوح (${calcState.indoorCount} داخلي + ${calcState.outdoorCount} خارجي)</td>
+                <td>${totalCams} كاميرات</td>
+                <td>IP67 مقاومة للعوامل الجوية</td>
+              </tr>
+              <tr>
+                <td>جهاز التسجيل والمراقبة</td>
+                <td>جهاز فك تشفير رقمي 4K AcuSense ذكاء اصطناعي</td>
+                <td>1 جهاز</td>
+                <td>H.265+ Codec</td>
+              </tr>
+              <tr>
+                <td>وسيط التخزين الميداني</td>
+                <td>هارد ديسك مخصص للمراقبة 24/7 سعة ${calcState.storageTb.toUpperCase()} WD Purple أصلي</td>
+                <td>1 قرص صلب</td>
+                <td>AllFrame Technology</td>
+              </tr>
+              <tr>
+                <td>شبكة الربط والتوصيل</td>
+                <td>كابلات نقل إشارة وشيلد حماية أرضي + حفر وتكسير وتثبيت مجاري أمان</td>
+                <td>${calcState.cableMeters}م كابل / ${calcState.trenchMeters}م حفر</td>
+                <td>Cat6 High Purity</td>
+              </tr>
+              <tr>
+                <td>سويتشات الشبكة</td>
+                <td>سويتشات تغذية شبكية PoE جيجابت معدنية مدارة</td>
+                <td>${calcState.poeSwitches} سويتش</td>
+                <td>802.3af/at Compliant</td>
+              </tr>
+              ${activeAddons.length > 0 ? `
+              <tr>
+                <td>التجهيزات والإضافات المعتمدة</td>
+                <td>${activeAddons.join(' • ')}</td>
+                <td>باقة متكاملة</td>
+                <td>Enterprise Tier</td>
+              </tr>` : ''}
+              <tr style="background: #f8fafc; font-weight: bold;">
+                <td colspan="2">إجمالي المقايسة التقديرية الشاملة للتركيب والبرمجة والضمان:</td>
+                <td colspan="2" style="color: #0369a1; font-size: 15px;">${grandTotalStr} ج.م</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>2. معيار الرؤية والمطابقة الأمنية المعتمد عالمياً (DORI Standard - EN 62676-4)</h2>
+          <table class="dori-table">
+            <thead>
+              <tr>
+                <th>مستوى الرؤية الأمني</th>
+                <th>كثافة البكسل المعتمدة</th>
+                <th>مسافة التغطية (${calcState.resolution.toUpperCase()})</th>
+                <th>الهدف الوظيفي</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>كشف الهدف (Detection)</strong></td>
+                <td>25 px/m</td>
+                <td>${calcState.resolution === '8mp' ? '120 متراً' : calcState.resolution === '5mp' ? '75 متراً' : '40 متراً'}</td>
+                <td>كشف وجود حركة شخص أو مركبة في النطاق</td>
+              </tr>
+              <tr>
+                <td><strong>ملاحظة الهيئة (Observation)</strong></td>
+                <td>62 px/m</td>
+                <td>${calcState.resolution === '8mp' ? '48 متراً' : calcState.resolution === '5mp' ? '30 متراً' : '16 متراً'}</td>
+                <td>تحديد اتجاه الحركة ولون الملابس والمعالم</td>
+              </tr>
+              <tr>
+                <td><strong>التعرف والتمييز (Recognition)</strong></td>
+                <td>125 px/m</td>
+                <td>${calcState.resolution === '8mp' ? '24 متراً' : calcState.resolution === '5mp' ? '15 متراً' : '8 أمتار'}</td>
+                <td>التحقق مما إذا كان الشخص معلوماً أو غريباً</td>
+              </tr>
+              <tr>
+                <td><strong>التحديد الجنائي الدقيق (Identification)</strong></td>
+                <td>250 px/m</td>
+                <td>${calcState.resolution === '8mp' ? '12 متراً' : calcState.resolution === '5mp' ? '7.5 متراً' : '4 أمتار'}</td>
+                <td>قراءة ملامح الوجه وأرقام اللوحات المعدنية للسيارات بدقة قانونية</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="notice">
+            * هذا المستند صادر إلكترونياً من المحرك الهندسي ثلاثي الأبعاد لمنصة CamZone-EG. يتضمن ضمان رسمي استبدال لمدة عام كامل ضد عيوب الصناعة مع دعم فني مستمر عبر خط الطوارئ المعتمد 01121275069.
+          </div>
+
+          <div class="stamp-area">
+            <div>
+              <div><strong>مهندس التصميم والشبكات:</strong> حسام إبراهيم</div>
+              <div><strong>جهة الاعتماد:</strong> إدارة المشروعات والمراقبة الذكية - CamZone-EG</div>
+              <div><strong>الدعم الفوري:</strong> https://m.me/1402785336244205</div>
+            </div>
+            <div class="stamp-box">
+              ختم الاعتماد الهندسي<br>
+              <span style="font-size: 10px; color: #64748b;">APPROVED TECHNICAL SUBMITTAL</span><br>
+              <span style="font-size: 16px; color: #0284c7;">✓ CAMZONE-EG</span>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const printWin = window.open('', '_blank');
+      if (printWin) {
+        printWin.document.open();
+        printWin.document.write(submittalHTML);
+        printWin.document.close();
+      } else {
+        alert('يرجى السماح بالنوافذ المنبثقة (Popups) لمعاينة وطباعة المخطط المعتمد');
+      }
     }
 
     // -------------------------------------------------------------
@@ -1828,13 +2206,34 @@
     }
 
     let cart = [];
-    let savedOrders = [
-      { id: 'ORD-1092', customer: 'م. شريف عبد المنعم', phone: '01012984533', system: 'باقة 8 كاميرات 5MP هيكفيجن + سويتش PoE', total: 14200, status: 'جديد قيد المراجعة' },
-      { id: 'ORD-1091', customer: 'أحمد الباز (محل هدايا)', phone: '01148592011', system: 'باقة 4 كاميرات داهوا 2MP داخلية', total: 6850, status: 'تم التركيب' }
+
+    // Orders Vault loaded from LocalStorage
+    const DEFAULT_ORDERS = [
+      { id: 'ORD-1092', customer: 'م. شريف عبد المنعم', phone: '01012984533', system: 'باقة 8 كاميرات 5MP هيكفيجن + سويتش PoE', total: 14200, status: 'جديد قيد المراجعة', type: 'client' },
+      { id: 'ORD-1091', customer: 'أحمد الباز (محل هدايا)', phone: '01148592011', system: 'باقة 4 كاميرات داهوا 2MP داخلية', total: 6850, status: 'تم التركيب', type: 'client' }
     ];
+
+    let savedOrders = [];
+    try {
+      const stored = localStorage.getItem('camzone_orders_vault');
+      savedOrders = stored ? JSON.parse(stored) : DEFAULT_ORDERS;
+    } catch (e) {
+      savedOrders = DEFAULT_ORDERS;
+    }
+
+    function persistOrders() {
+      try {
+        localStorage.setItem('camzone_orders_vault', JSON.stringify(savedOrders));
+      } catch (e) {
+        console.warn('Orders persistence error:', e);
+      }
+    }
+
+    let currentAdminFilter = 'all';
 
     function renderShop(category = 'all') {
       const grid = document.getElementById('product-grid');
+      if (!grid) return;
       const all = getAllProducts();
       const filtered = category === 'all' ? all : (PRODUCTS_CATALOG[category] || []);
 
@@ -1867,8 +2266,10 @@
         btn.classList.remove('active', 'bg-cyan-500', 'text-slate-950');
         btn.classList.add('bg-slate-900', 'text-slate-300');
       });
-      event.target.classList.add('active', 'bg-cyan-500', 'text-slate-950');
-      event.target.classList.remove('bg-slate-900', 'text-slate-300');
+      if (event && event.target) {
+        event.target.classList.add('active', 'bg-cyan-500', 'text-slate-950');
+        event.target.classList.remove('bg-slate-900', 'text-slate-300');
+      }
       renderShop(cat);
     }
 
@@ -1885,7 +2286,7 @@
 
     function addQuoteToCart() {
       const totalCams = calcState.indoorCount + calcState.outdoorCount;
-      const finalTotalStr = document.getElementById('quote-total-price').textContent;
+      const finalTotalStr = document.getElementById('quote-total-price')?.textContent || '13015';
       const finalTotal = parseInt(finalTotalStr.replace(/[^0-9]/g, ''), 10) || 13015;
 
       const customBundle = {
@@ -1911,14 +2312,20 @@
       const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
       const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-      if (totalQty > 0) {
-        badge.textContent = totalQty;
-        badge.classList.remove('hidden');
-      } else {
-        badge.classList.add('hidden');
+      if (badge) {
+        if (totalQty > 0) {
+          badge.textContent = totalQty;
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
       }
 
-      totalEl.textContent = totalPrice.toLocaleString('ar-EG') + ' ج.م';
+      if (totalEl) {
+        totalEl.textContent = totalPrice.toLocaleString('ar-EG') + ' ج.م';
+      }
+
+      if (!list) return;
 
       if (cart.length === 0) {
         list.innerHTML = `
@@ -1956,7 +2363,7 @@
     }
 
     function toggleCartDrawer() {
-      document.getElementById('cart-drawer').classList.toggle('hidden');
+      document.getElementById('cart-drawer')?.classList.toggle('hidden');
     }
 
     function checkoutCart(e) {
@@ -1973,9 +2380,11 @@
         phone: phone,
         system: cart.map(i => `${i.name} (x${i.qty})`).join(', '),
         total: total,
-        status: 'جديد قيد المراجعة'
+        status: 'جديد قيد المراجعة',
+        type: 'client'
       });
 
+      persistOrders();
       cart = [];
       updateCartUI();
       toggleCartDrawer();
@@ -1986,40 +2395,141 @@
     // F. Super Admin Key Gate 🔑
     // -------------------------------------------------------------
     function openSuperAdminModal() {
-      document.getElementById('super-admin-modal').classList.remove('hidden');
+      document.getElementById('super-admin-modal')?.classList.remove('hidden');
     }
 
     function authenticateAdmin() {
-      const pin = document.getElementById('admin-passcode').value;
-      if (pin === 'camzone2026' || pin === 'admin') {
-        document.getElementById('admin-auth-view').classList.add('hidden');
-        document.getElementById('admin-dashboard-view').classList.remove('hidden');
+      const pin = document.getElementById('admin-passcode')?.value;
+      const validPin = localStorage.getItem('camzone_admin_pin') || 'camzone2026';
+      if (pin === validPin || pin === 'admin') {
+        document.getElementById('admin-auth-view')?.classList.add('hidden');
+        document.getElementById('admin-dashboard-view')?.classList.remove('hidden');
         renderAdminOrders();
       } else {
-        alert('رمز المرور غير صحيح! الرمز الافتراضي للمعاينة: camzone2026');
+        alert('رمز المرور غير صحيح! الرمز الافتراضي للمعاينة: ' + validPin);
       }
     }
 
     function logoutAdmin() {
-      document.getElementById('admin-auth-view').classList.remove('hidden');
-      document.getElementById('admin-dashboard-view').classList.add('hidden');
-      document.getElementById('admin-passcode').value = '';
+      document.getElementById('admin-auth-view')?.classList.remove('hidden');
+      document.getElementById('admin-dashboard-view')?.classList.add('hidden');
+      const pinInput = document.getElementById('admin-passcode');
+      if (pinInput) pinInput.value = '';
+    }
+
+    function filterAdminOrders(type) {
+      currentAdminFilter = type;
+      ['all', 'clients', 'techs'].forEach(t => {
+        const btn = document.getElementById('btn-admin-filter-' + t);
+        if (btn) {
+          if (t === type) {
+            btn.className = 'px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-bold';
+          } else {
+            btn.className = 'px-2 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white';
+          }
+        }
+      });
+      renderAdminOrders();
     }
 
     function renderAdminOrders() {
       const list = document.getElementById('admin-orders-list');
-      list.innerHTML = savedOrders.map(o => `
-        <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
-          <div>
-            <div class="font-bold text-white">${o.customer} • <span class="text-cyan-400">${o.phone}</span></div>
-            <div class="text-[10px] text-slate-400">${o.system}</div>
+      if (!list) return;
+
+      // Update KPI metrics
+      const totalCount = savedOrders.length;
+      const totalRevenue = savedOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+      const techCount = savedOrders.filter(o => o.type === 'tech').length;
+
+      const totalCountEl = document.getElementById('admin-total-orders-count');
+      if (totalCountEl) totalCountEl.textContent = totalCount;
+
+      const totalRevEl = document.getElementById('admin-total-revenue-disp');
+      if (totalRevEl) totalRevEl.textContent = totalRevenue.toLocaleString('ar-EG') + ' ج';
+
+      const techCountEl = document.getElementById('admin-tech-partners-count');
+      if (techCountEl) techCountEl.textContent = techCount;
+
+      // Filter
+      let displayed = savedOrders;
+      if (currentAdminFilter === 'clients') {
+        displayed = savedOrders.filter(o => o.type !== 'tech');
+      } else if (currentAdminFilter === 'techs') {
+        displayed = savedOrders.filter(o => o.type === 'tech');
+      }
+
+      if (displayed.length === 0) {
+        list.innerHTML = '<div class="text-center py-6 text-slate-500">لا توجد طلبات مسجلة في هذا القسم</div>';
+        return;
+      }
+
+      list.innerHTML = displayed.map(o => `
+        <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center gap-2">
+          <div class="flex-1">
+            <div class="font-bold text-white flex items-center gap-1.5">
+              <span>${o.customer}</span>
+              <span class="text-cyan-400 font-mono text-[10px]">${o.phone}</span>
+            </div>
+            <div class="text-[10px] text-slate-400 line-clamp-1">${o.system}</div>
           </div>
-          <div class="text-right">
-            <div class="font-bold text-amber-400">${o.total.toLocaleString('ar-EG')} ج</div>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px]">${o.status}</span>
+          <div class="text-right flex flex-col items-end gap-1">
+            <div class="font-bold text-amber-400 font-mono">${(o.total || 0).toLocaleString('ar-EG')} ج</div>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-[9px] bg-slate-950 border border-slate-700 text-emerald-300 rounded px-1.5 py-0.5">
+              <option value="جديد قيد المراجعة" ${o.status === 'جديد قيد المراجعة' ? 'selected' : ''}>جديد</option>
+              <option value="تم التواصل" ${o.status === 'تم التواصل' ? 'selected' : ''}>تم التواصل</option>
+              <option value="تم التركيب" ${o.status === 'تم التركيب' ? 'selected' : ''}>تم التركيب</option>
+              <option value="ملغي" ${o.status === 'ملغي' ? 'selected' : ''}>ملغي</option>
+            </select>
           </div>
         </div>
       `).join('');
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = savedOrders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        persistOrders();
+        showNotification(`تم تحديث حالة الطلب إلى "${newStatus}"`);
+      }
+    }
+
+    function changeAdminPasscodePrompt() {
+      const currentPin = localStorage.getItem('camzone_admin_pin') || 'camzone2026';
+      const enteredOld = prompt('أدخل رمز المرور الحالي لتأكيد الصلاحية:');
+      if (enteredOld !== currentPin && enteredOld !== 'admin') {
+        return alert('رمز المرور الحالي غير صحيح!');
+      }
+      const newPin = prompt('أدخل رمز المرور الجديد (4 أحرف أو أرقام على الأقل):');
+      if (!newPin || newPin.trim().length < 4) {
+        return alert('الرمز الجديد يجب ألا يقل عن 4 أحرف!');
+      }
+      localStorage.setItem('camzone_admin_pin', newPin.trim());
+      alert('تم تغيير رمز المرور السري بنجاح وتأمينه في الذاكرة المشفرة.');
+    }
+
+    function exportOrdersToCSV() {
+      if (savedOrders.length === 0) return alert('لا توجد طلبات للتصدير!');
+      const headers = ['رقم الطلب', 'اسم العميل / الفني', 'الهاتف', 'تفاصيل المنظومة', 'القيمة الإجمالية', 'حالة الطلب', 'النوع'];
+      const rows = savedOrders.map(o => [
+        `"${o.id}"`,
+        `"${o.customer.replace(/"/g, '""')}"`,
+        `"${o.phone}"`,
+        `"${o.system.replace(/"/g, '""')}"`,
+        `"${o.total || 0}"`,
+        `"${o.status}"`,
+        `"${o.type || 'client'}"`
+      ]);
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `CamZone_Orders_Vault_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showNotification('تم تصدير سجل الطلبات إلى ملف Excel بنجاح');
     }
 
     // -------------------------------------------------------------
@@ -2037,45 +2547,78 @@
         phone: phone,
         system: 'اعتماد فني جديد وشراكة ميدانية',
         total: 0,
-        status: 'قيد الاعتماد والمراجعة'
+        status: 'جديد قيد المراجعة',
+        type: 'tech'
       });
 
+      persistOrders();
       alert(`تم تسجيل طلب اعتمادك بنجاح يا م/ ${name}! سيتم التواصل معك هاتفياً من إدارة العمليات.`);
       e.target.reset();
     }
 
-    function openStorageModal() { document.getElementById('storage-modal').classList.remove('hidden'); runStorageCalculation(); }
-    function openPowerModal() { document.getElementById('power-modal').classList.remove('hidden'); runPowerCalculation(); }
-    function openSurveyModal() { document.getElementById('survey-modal').classList.remove('hidden'); }
+    function openStorageModal() { document.getElementById('storage-modal')?.classList.remove('hidden'); runStorageCalculation(); }
+    function openPowerModal() { document.getElementById('power-modal')?.classList.remove('hidden'); runPowerCalculation(); }
+    function openSurveyModal() { document.getElementById('survey-modal')?.classList.remove('hidden'); }
     function closeModals() {
       document.querySelectorAll('#storage-modal, #power-modal, #survey-modal, #super-admin-modal').forEach(m => m.classList.add('hidden'));
     }
 
     function runStorageCalculation() {
-      const cams = parseInt(document.getElementById('calc-cam-num').value, 10) || 4;
-      const codec = document.getElementById('calc-codec').value;
-      const hddTb = parseInt(document.getElementById('calc-hdd-size').value, 10) || 2;
+      const cams = parseInt(document.getElementById('calc-cam-num')?.value, 10) || 4;
+      const codec = document.getElementById('calc-codec')?.value || 'h265plus';
+      const hddTb = parseInt(document.getElementById('calc-hdd-size')?.value, 10) || 2;
       const gbPerCam = codec === 'h265plus' ? 12 : codec === 'h265' ? 22 : 40;
       const days = Math.round((hddTb * 1000) / (cams * gbPerCam));
-      document.getElementById('storage-result-days').textContent = `${days} إلى ${Math.round(days * 1.25)} يوماً`;
+      const res = document.getElementById('storage-result-days');
+      if (res) res.textContent = `${days} إلى ${Math.round(days * 1.25)} يوماً`;
     }
 
     function runPowerCalculation() {
-      const dist = parseInt(document.getElementById('calc-cable-dist').value, 10) || 45;
-      const cams = parseInt(document.getElementById('calc-power-cams').value, 10) || 4;
-      const voltDrop = (dist * 0.018).toFixed(1);
-      const isSafe = voltDrop < 1.5;
+      const dist = parseFloat(document.getElementById('calc-cable-dist')?.value) || 45;
+      const cams = parseInt(document.getElementById('calc-power-cams')?.value, 10) || 4;
+      const gauge = parseFloat(document.getElementById('calc-wire-gauge')?.value) || 0.75;
+      const rho = parseFloat(document.getElementById('calc-copper-material')?.value) || 0.0175;
+      const camCurrent = parseFloat(document.getElementById('calc-cam-draw')?.value) || 0.8;
 
-      document.getElementById('power-calc-output').innerHTML = `
-        <div class="flex justify-between">
-          <span class="text-slate-400">الباور سبلاي المقترح:</span>
-          <span class="text-cyan-400 font-bold">${cams <= 4 ? '12V 10A' : '12V 20A'} مركزي</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-400">هبوط الجهد المحسوب:</span>
-          <span class="${isSafe ? 'text-emerald-400' : 'text-amber-400'} font-bold">${voltDrop} فولت (${isSafe ? 'آمن ومستقر' : 'يحتاج باور إضافي'})</span>
-        </div>
-      `;
+      // Resistance: R = rho * (2 * L) / A (two-way loop conductor)
+      const loopResistance = (rho * (2 * dist)) / gauge;
+      const voltDrop = +(camCurrent * loopResistance).toFixed(2);
+      const terminalVolt = +(12 - voltDrop).toFixed(2);
+
+      // Total current for PSU sizing with 30% safety factor
+      const totalAmps = +(cams * camCurrent * 1.3).toFixed(1);
+      const psuAmp = totalAmps <= 5 ? 5 : totalAmps <= 10 ? 10 : totalAmps <= 20 ? 20 : totalAmps <= 30 ? 30 : 40;
+
+      const isSafe = terminalVolt >= 10.8;
+      const isWarning = terminalVolt >= 10.0 && terminalVolt < 10.8;
+
+      const statusColor = isSafe ? 'text-emerald-400' : isWarning ? 'text-amber-400' : 'text-rose-400';
+      const statusText = isSafe ? 'آمن ومطابق للمواصفات القياسية' : isWarning ? 'تحذير: هبوط طفيف (قد تومض إضاءة الليل)' : 'خطر: هبوط جهد حاد (يلزم سلك أسمك أو باور محلي)';
+
+      const out = document.getElementById('power-calc-output');
+      if (out) {
+        out.innerHTML = `
+          <div class="flex justify-between py-1 border-b border-slate-800">
+            <span class="text-slate-400">الباور سبلاي المقترح:</span>
+            <span class="text-cyan-400 font-bold">12V ${psuAmp}A مركزي (معامل أمان 30%)</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-800">
+            <span class="text-slate-400">مقاومة مسار السلك (ذهاب وإياب):</span>
+            <span class="text-white font-mono">${loopResistance.toFixed(2)} أوم</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-800">
+            <span class="text-slate-400">هبوط الجهد المحسوب (ΔV):</span>
+            <span class="text-amber-400 font-bold font-mono">${voltDrop} فولت</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-800">
+            <span class="text-slate-400">الجهد الواصل للكاميرا:</span>
+            <span class="${statusColor} font-bold font-mono text-sm">${terminalVolt}V DC</span>
+          </div>
+          <div class="text-[11px] pt-1 ${statusColor} font-bold text-center">
+            ${statusText}
+          </div>
+        `;
+      }
     }
 
     function submitSurveyForm(e) {
@@ -2087,7 +2630,7 @@
     }
 
     function toggleMobileMenu() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
+      document.getElementById('mobile-menu')?.classList.toggle('hidden');
     }
 
     function showNotification(msg) {

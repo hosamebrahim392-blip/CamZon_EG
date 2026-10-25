@@ -273,18 +273,24 @@ export function calculateStorageDays(
 
 /**
  * Calculates power supply specifications and checks for voltage drop over cable distance
+ * Uses Ohm's Law: ΔV = (2 * Length * Current * Resistivity) / CrossSectionArea
  */
 export function calculatePowerSupply(
   cams: number,
-  avgCableLengthMeters: number
+  avgCableLengthMeters: number,
+  wireGaugeMm2: number = 0.75,
+  copperType: 'pure' | 'cca' = 'pure',
+  camAmps: number = 1.0
 ): {
   recommendedAmps: number;
   totalWattage: number;
   voltageDropNotice: string;
   isSafe: boolean;
+  calculatedVoltageDrop?: number;
+  terminalVoltage?: number;
 } {
   // Standard CCTV camera consumes ~0.5A daytime, up to 1.0A - 1.2A with Night Vision IR LEDs active
-  const maxCurrentPerCam = 1.2;
+  const maxCurrentPerCam = camAmps || 1.2;
   const totalDrawAmps = cams * maxCurrentPerCam;
   // Add 30% safety head-room
   const requiredAmpsWithSafety = totalDrawAmps * 1.3;
@@ -296,14 +302,20 @@ export function calculatePowerSupply(
 
   const totalWattage = Math.round(recommendedAmps * 12);
 
-  let voltageDropNotice = 'المسافة آمنة ومثالية (فقدان جهد ضئيل جداً).';
+  // Copper resistivity: Pure Copper = 0.0175 ohm*mm2/m, CCA/Commercial = 0.028 ohm*mm2/m
+  const rho = copperType === 'pure' ? 0.0175 : 0.028;
+  const loopResistance = (2 * avgCableLengthMeters * rho) / Math.max(0.2, wireGaugeMm2);
+  const calculatedVoltageDrop = Math.round(maxCurrentPerCam * loopResistance * 10) / 10;
+  const terminalVoltage = Math.max(0, Math.round((12.0 - calculatedVoltageDrop) * 10) / 10);
+
+  let voltageDropNotice = `المسافة آمنة ومثالية (هبوط الجهد ${calculatedVoltageDrop}V، الجهد النهائي ${terminalVoltage}V).`;
   let isSafe = true;
 
-  if (avgCableLengthMeters > 70) {
-    voltageDropNotice = 'تحذير: المسافة أطول من 70 متراً؛ قد يحدث هبوط ملحوظ في جهد 12V ليلاً. يُفضل استخدام باور منفصل قرب الكاميرا أو استخدام كابلات نحاس معتمد 1.0 مم.';
+  if (avgCableLengthMeters > 70 || calculatedVoltageDrop > 1.5 || terminalVoltage < 10.5) {
+    voltageDropNotice = `تحذير: المسافة أطول من 70 متراً أو هبوط الجهد حرج (${calculatedVoltageDrop}V - يصل للكاميرا ${terminalVoltage}V). قد تنفصل الرؤية الليلية؛ يُفضل استخدام كابل نحاس 1.0 مم² أو باور منفصل قرب الكاميرا.`;
     isSafe = false;
-  } else if (avgCableLengthMeters > 45) {
-    voltageDropNotice = 'مسافة متوسطة: يوصى باستخدام سلك نحاس نقي 0.75 مم أو باور مركزي قابل لضبط الفولتية (12V-13.8V Potentiometer).';
+  } else if (avgCableLengthMeters > 45 || calculatedVoltageDrop > 0.9) {
+    voltageDropNotice = `مسافة متوسطة: هبوط الجهد المتوقع ${calculatedVoltageDrop}V (يصل ${terminalVoltage}V). يوصى بسلك نحاس 0.75 مم² أو باور مركزي قابل لضبط الفولتية (12V-13.8V Potentiometer).`;
   }
 
   return {
@@ -311,6 +323,8 @@ export function calculatePowerSupply(
     totalWattage,
     voltageDropNotice,
     isSafe,
+    calculatedVoltageDrop,
+    terminalVoltage,
   };
 }
 

@@ -616,6 +616,7 @@
     window.CamZone3D.totalCableMeters = Math.max(30, Math.round(calcMeters));
     window.CamZone3D.totalTrenchMeters = Math.round(trenchMeters);
     updateMetricsHUD();
+    dispatchSync3DEvent();
   }
 
   // -------------------------------------------------------------
@@ -851,12 +852,60 @@
     }
   }
 
+  function disposeMesh(node) {
+    if (!node) return;
+    if (node.geometry) {
+      try { node.geometry.dispose(); } catch (e) {}
+    }
+    if (node.material) {
+      try {
+        if (Array.isArray(node.material)) {
+          node.material.forEach(m => m.dispose && m.dispose());
+        } else if (node.material.dispose) {
+          node.material.dispose();
+        }
+      } catch (e) {}
+    }
+    if (node.children && node.children.length > 0) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        disposeMesh(node.children[i]);
+      }
+    }
+  }
+
+  function dispatchSync3DEvent() {
+    try {
+      const cams = window.CamZone3D.equipment.filter(e =>
+        e.type === 'camera_hd' || e.type === 'camera_ip' || e.type === 'camera_ptz'
+      ).length;
+      const jBoxes = window.CamZone3D.equipment.filter(e => e.type === 'junction').length;
+      const brackets = window.CamZone3D.equipment.filter(e => e.type === 'bracket').length;
+      const switches = window.CamZone3D.equipment.filter(e => e.type === 'switch').length;
+
+      window.dispatchEvent(new CustomEvent('camzone:sync3d', {
+        detail: {
+          totalCams: cams,
+          indoorCount: Math.floor(cams / 2),
+          outdoorCount: Math.ceil(cams / 2),
+          cableMeters: Math.max(30, Math.round(window.CamZone3D.totalCableMeters || 45)),
+          trenchMeters: Math.max(0, Math.round(window.CamZone3D.totalTrenchMeters || 0)),
+          junctionBoxes: jBoxes,
+          brackets: brackets,
+          switches: switches
+        }
+      }));
+    } catch (e) {}
+  }
+
   function deleteSelectedEquipment() {
     const cam = window.CamZone3D.selectedCamera;
     if (!cam) return;
 
-    if (cam.meshGroup && cam.meshGroup.parent) {
-      cam.meshGroup.parent.remove(cam.meshGroup);
+    if (cam.meshGroup) {
+      disposeMesh(cam.meshGroup);
+      if (cam.meshGroup.parent) {
+        cam.meshGroup.parent.remove(cam.meshGroup);
+      }
     }
 
     window.CamZone3D.equipment = window.CamZone3D.equipment.filter(e => e.id !== cam.id);
@@ -864,6 +913,7 @@
     rebuildWallAlignedCables();
     updateMetricsHUD();
     requestShadowUpdate();
+    dispatchSync3DEvent();
     showEngineNotification('camera_deleted');
   }
 
@@ -1045,15 +1095,27 @@
   }
 
   function reset3DScene() {
-    window.CamZone3D.walls.forEach(w => w.parent && w.parent.remove(w));
-    window.CamZone3D.equipment.forEach(e => e.meshGroup && e.meshGroup.parent && e.meshGroup.parent.remove(e.meshGroup));
-    window.CamZone3D.stairs.forEach(s => s.parent && s.parent.remove(s));
+    window.CamZone3D.walls.forEach(w => {
+      disposeMesh(w);
+      if (w.parent) w.parent.remove(w);
+    });
+    window.CamZone3D.equipment.forEach(e => {
+      if (e.meshGroup) {
+        disposeMesh(e.meshGroup);
+        if (e.meshGroup.parent) e.meshGroup.parent.remove(e.meshGroup);
+      }
+    });
+    window.CamZone3D.stairs.forEach(s => {
+      disposeMesh(s);
+      if (s.parent) s.parent.remove(s);
+    });
     window.CamZone3D.walls = [];
     window.CamZone3D.equipment = [];
     window.CamZone3D.stairs = [];
     deselectCamera();
     seedInitialArchitecture();
     showEngineNotification('scene_reset');
+    dispatchSync3DEvent();
   }
 
   // -------------------------------------------------------------
