@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CamZone-EG | كاميرات مراقبة وتركيب - المنصة الهندسية المتكاملة في مصر</title>
+  <meta name="description" content="المنصة الهندسية الذكية لتصميم ومحاكاة شبكات كاميرات المراقبة متعددة الطوابق وحساب الكابلات والمكونات في مصر." />
+  <meta property="og:title" content="CamZone-EG | كاميرات مراقبة وتركيب" />
+  <meta property="og:description" content="المصمم ثلاثي الأبعاد المتقدم بنظام البناء بالضغط ومنظور الشخص الثالث وحاسبة الباقات الرقمية" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#07080c" />
+
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              void: '#07080c',
+              dark: '#0b0c10',
+              card: '#0e111a',
+              border: '#1b2030',
+              neonCyan: '#06b6d4',
+              neonAmber: '#f59e0b',
+              neonOrange: '#ff6b00',
+              neonEmerald: '#10b981',
+              neonPurple: '#a855f7',
+            }
+          },
+          fontFamily: {
+            sans: ['Cairo', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- CamZone-EG 3D Architectural Simulator Engine (100% Pure English Script) -->
+  <script src="designer3d.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #07080c;
+      --card-glass: rgba(14, 17, 26, 0.75);
+      --border-cyan: rgba(6, 182, 212, 0.4);
+      --glow-cyan: 0 0 25px rgba(6, 182, 212, 0.3);
+      --glow-amber: 0 0 25px rgba(245, 158, 11, 0.35);
+      --glow-orange: 0 0 25px rgba(255, 107, 0, 0.45);
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: #e2e8f0;
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #07080c; }
+    ::-webkit-scrollbar-thumb { background: #1e2433; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+
+    /* Glassmorphism Classes */
+    .glass-panel {
+      background: rgba(13, 16, 25, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(30, 41, 59, 0.85);
+    }
+    .glass-panel-cyan {
+      background: rgba(11, 15, 26, 0.90);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+    }
+    .glass-panel-amber {
+      background: rgba(18, 15, 10, 0.90);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+    }
+
+    /* 3D Perspective Tilt Container */
+    .perspective-wrapper {
+      perspective: 1300px;
+    }
+    #tilt-box {
+      transform: rotateX(8deg) rotateY(-2deg);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-radius 0.4s ease;
+      box-shadow: 0 25px 60px -15px rgba(6, 182, 212, 0.25);
+    }
+    #tilt-box:hover:not(.is-fullscreen) {
+      transform: rotateX(3deg) rotateY(-1deg);
+      box-shadow: 0 30px 70px -15px rgba(6, 182, 212, 0.35);
+    }
+    #tilt-box.is-fullscreen {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 9999 !important;
+      border-radius: 0 !important;
+      border: none !important;
+      transform: none !important;
+      margin: 0 !important;
+    }
+
+    /* Minimal HUD Icons */
+    .hud-icon-btn {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #94a3b8;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      touch-action: manipulation;
+    }
+    .hud-icon-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: rgba(6, 182, 212, 0.8);
+      color: #38bdf8;
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+    }
+    .hud-icon-btn:active {
+      transform: scale(0.95);
+    }
+    .hud-icon-btn.active {
+      background: #06b6d4;
+      border-color: #38bdf8;
+      color: #020617;
+      font-weight: 900;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+    }
+
+    /* Marquee Animation */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marquee 24s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+
+    /* Virtual 360 Touch Joystick */
+    .virtual-joystick-base {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.12), rgba(2, 6, 23, 0.7));
+      border: 2px solid rgba(6, 182, 212, 0.45);
+      backdrop-filter: blur(10px);
+      position: relative;
+      touch-action: none;
+      user-select: none;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    }
+    .virtual-joystick-stick {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7);
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.75), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: box-shadow 0.2s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#07080c] text-[#e2e8f0] selection:bg-cyan-500/25 selection:text-cyan-300">
+
+  <!-- ========================================== -->
+  <!-- 1. Top Bar & Official Glowing Direct Links -->
+  <!-- ========================================== -->
+  <div class="bg-[#050608] border-b border-slate-800/80 px-4 py-2 text-xs text-slate-300 relative z-30">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Right: Official Badges -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span class="flex items-center gap-1.5 text-cyan-400 font-bold">
+          <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+          <span>منصة CamZone-EG المعتمدة للهندسة والتركيب</span>
+        </span>
+        <span class="hidden md:inline text-slate-600">•</span>
+        <span class="hidden md:inline text-slate-400">
+          ضمان رسمي عامين استبدال فوري • كابلات نحاس نقي 100%
+        </span>
+      </div>
+
+      <!-- Left: Direct Phone Call, Messenger, Facebook, Instagram & Key Icon -->
+      <div class="flex items-center gap-3 text-xs">
+        <!-- Direct Phone Call Button -->
+        <a href="tel:01121275069" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 font-bold transition shadow-sm shadow-emerald-500/10" title="اتصال هاتفي مباشر">
+          <i data-lucide="phone-call" class="w-3.5 h-3.5 animate-pulse text-emerald-400"></i>
+          <span>اتصال: 01121275069</span>
+        </a>
+
+        <span class="text-slate-700">|</span>
+
+        <!-- Direct Messenger -->
+        <a href="https://m.me/1402785336244205" target="_blank" rel="noopener noreferrer"
+           class="flex items-center gap-1 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 font-bold transition"
+           title="شات مسنجر الرسمي">
+          <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">مسنجر</span>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://facebook.com/camzone.eg" target="_blank" rel="noopener noreferrer"
+           class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-blue-400 hover:border-blue-500/40 transition" title="فيسبوك">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+
+        <!-- Instagram -->
+        <a href="https://instagram.com/camzone.eg" target="_blank" rel="noopener noreferrer"
+           class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-pink-400 hover:border-pink-500/40 transition" title="إنستجرام">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+
+        <span class="text-slate-700">|</span>
+
+        <!-- Fixed Key Icon (Super Admin Gate) -->
+        <button onclick="openSuperAdminModal()" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/40 text-amber-400 hover:bg-amber-500/25 font-bold transition shadow-sm shadow-amber-500/20 cursor-pointer" title="لوحة المفتاح - Super Admin Hub">
+          <i data-lucide="key" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span class="hidden md:inline">الإدارة</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. Sticky Glass Navbar                     -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#090b12]/90 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <!-- Brand Logo (CamZone-EG Official) -->
+      <div class="flex items-center gap-3">
+        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25">
+          <i data-lucide="camera" class="w-5 h-5 text-slate-950 font-bold"></i>
+          <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-950"></div>
+        </div>
+        <div>
+          <a href="#" class="text-lg font-black tracking-tight text-white flex items-center gap-1.5">
+            <span>CamZone-EG</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500 text-slate-950 font-black">Pro</span>
+          </a>
+          <p class="text-[10px] text-slate-400 -mt-0.5 font-medium hidden sm:block">
+            منظومات المراقبة، التوجيه الذكي للكابلات، وبوابة الفنيين
+          </p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-6 text-xs font-bold text-slate-300">
+        <a href="#designer3d" class="hover:text-cyan-400 transition flex items-center gap-1">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>المصمم 3D المعماري</span>
+        </a>
+        <a href="#calculator" class="hover:text-cyan-400 transition flex items-center gap-1">
+          <i data-lucide="cpu" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>حاسبة الباقات الرقمية</span>
+        </a>
+        <a href="#shop" class="hover:text-cyan-400 transition flex items-center gap-1">
+          <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>المتجر المعتمد</span>
+        </a>
+        <a href="#technician" class="hover:text-cyan-400 transition flex items-center gap-1">
+          <i data-lucide="wrench" class="w-3.5 h-3.5 text-purple-400"></i>
+          <span>بوابة الفنيين</span>
+        </a>
+        <button onclick="openStorageModal()" class="hover:text-cyan-400 transition cursor-pointer">
+          حاسبة الهارد
+        </button>
+        <button onclick="openPowerModal()" class="hover:text-cyan-400 transition cursor-pointer">
+          فحص الجهد
+        </button>
+        <button onclick="openSurveyModal()" class="hover:text-cyan-400 transition cursor-pointer">
+          معاينة موقع
+        </button>
+      </nav>
+
+      <!-- Cart Toggle & Call CTA -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="toggleCartDrawer()" class="relative p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 transition cursor-pointer" title="سلة المشتريات">
+          <i data-lucide="shopping-cart" class="w-4 h-4 text-cyan-400"></i>
+          <span id="cart-badge" class="hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-cyan-500 text-slate-950 font-black text-[10px] flex items-center justify-center shadow">
+            0
+          </span>
+        </button>
+
+        <a href="tel:01121275069" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-xs font-black transition shadow-lg shadow-cyan-500/25">
+          <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+          <span>اطلب تليفونياً</span>
+        </a>
+
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg text-slate-300 hover:bg-slate-800 cursor-pointer">
+          <i data-lucide="menu" id="menu-icon" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden px-4 py-3 bg-[#0d101b] border-b border-slate-800 space-y-2 text-xs font-semibold">
+      <a href="#designer3d" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">📐 المصمم 3D المعماري</a>
+      <a href="#calculator" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">⚡ حاسبة الباقات الرقمية</a>
+      <a href="#shop" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">🛒 متجر الكاميرات والمكونات</a>
+      <a href="#technician" onclick="toggleMobileMenu()" class="block py-2 text-slate-300 hover:text-cyan-400">👷‍♂️ بوابة اعتماد الفنيين</a>
+      <div class="pt-2 border-t border-slate-800/80 flex flex-wrap gap-2">
+        <button onclick="openStorageModal(); toggleMobileMenu();" class="px-2.5 py-1 rounded bg-slate-900 text-cyan-400 border border-slate-700">حاسبة الهارد</button>
+        <button onclick="openPowerModal(); toggleMobileMenu();" class="px-2.5 py-1 rounded bg-slate-900 text-cyan-400 border border-slate-700">فحص الجهد</button>
+        <button onclick="openSurveyModal(); toggleMobileMenu();" class="px-2.5 py-1 rounded bg-slate-900 text-emerald-400 border border-slate-700">معاينة موقع مجانية</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <!-- ======================================================= -->
+    <!-- 3. Hero Section with Interactive Laser-Ray Logo Canvas -->
+    <!-- ======================================================= -->
+    <section class="relative pt-16 pb-20 px-4 sm:px-6 overflow-hidden min-h-[540px] flex items-center justify-center">
+      <!-- Interactive Laser-Ray Logo Canvas Background -->
+      <canvas id="hero-laser-canvas" class="absolute inset-0 w-full h-full pointer-events-auto opacity-80 z-0"></canvas>
+
+      <div class="max-w-5xl mx-auto text-center relative z-10 pointer-events-none">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold mb-6 pointer-events-auto shadow-sm shadow-cyan-500/20 backdrop-blur-md">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>الجيل الجديد من منصة محاكاة وتخطيط كاميرات المراقبة في مصر</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight sm:leading-tight mb-5 drop-shadow-xl">
+          صمّم، حاكِ، ونفّذ منظومتك الأمنية <br class="hidden sm:inline" />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-amber-400">
+            بأعلى دقة ثلاثية الأبعاد وبدون أخطاء
+          </span>
+        </h1>
+
+        <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-normal pointer-events-auto drop-shadow">
+          رقعة معمارية واسعة، نظام البناء بالضغط، منظور الشخص الثالث التكتيكي، تدوير الكاميرات وعرض الطوابق المتجاورة لكشف كامل الزوايا العمياء.
+        </p>
+
+        <!-- CTA Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8 pointer-events-auto">
+          <a href="#designer3d" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm shadow-xl shadow-cyan-500/25 active:scale-95 transition flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4"></i>
+            <span>ابدأ التصميم ثلاثي الأبعاد</span>
+          </a>
+          <a href="#calculator" class="px-6 py-3.5 rounded-xl glass-panel hover:bg-slate-800 text-white font-bold text-sm border border-slate-700 transition">
+            حاسبة الباقات الرقمية
+          </a>
+          <a href="tel:01121275069" class="px-6 py-3.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold text-sm border border-emerald-500/40 transition flex items-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4"></i>
+            <span>01121275069</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. Infinite Glowing Brands Marquee         -->
+    <!-- ========================================== -->
+    <div class="bg-[#05070c] border-y border-slate-800/80 py-4 overflow-hidden relative shadow-inner">
+      <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#05070c] to-transparent z-10 pointer-events-none"></div>
+      <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#05070c] to-transparent z-10 pointer-events-none"></div>
+
+      <div class="flex animate-marquee whitespace-nowrap text-xs font-black tracking-widest text-slate-400 uppercase select-none items-center gap-12">
+        <span class="flex items-center gap-2 text-cyan-400"><i data-lucide="shield" class="w-4 h-4"></i> HIKVISION ACUSENSE</span>
+        <span class="flex items-center gap-2 text-amber-400"><i data-lucide="award" class="w-4 h-4"></i> DAHUA WIZSENSE</span>
+        <span class="flex items-center gap-2 text-blue-400"><i data-lucide="hard-drive" class="w-4 h-4"></i> WD PURPLE SURVEILLANCE</span>
+        <span class="flex items-center gap-2 text-emerald-400"><i data-lucide="cpu" class="w-4 h-4"></i> UNIVIEW LIGHTHUNTER</span>
+        <span class="flex items-center gap-2 text-purple-400"><i data-lucide="wifi" class="w-4 h-4"></i> EZVIZ SMART IOT</span>
+        <span class="flex items-center gap-2 text-orange-400"><i data-lucide="zap" class="w-4 h-4"></i> SEAGATE SKYHAWK AI</span>
+        <span class="flex items-center gap-2 text-teal-400"><i data-lucide="server" class="w-4 h-4"></i> RUIJIE REYEE POE</span>
+        <!-- Duplicated items for seamless loop -->
+        <span class="flex items-center gap-2 text-cyan-400"><i data-lucide="shield" class="w-4 h-4"></i> HIKVISION ACUSENSE</span>
+        <span class="flex items-center gap-2 text-amber-400"><i data-lucide="award" class="w-4 h-4"></i> DAHUA WIZSENSE</span>
+        <span class="flex items-center gap-2 text-blue-400"><i data-lucide="hard-drive" class="w-4 h-4"></i> WD PURPLE SURVEILLANCE</span>
+        <span class="flex items-center gap-2 text-emerald-400"><i data-lucide="cpu" class="w-4 h-4"></i> UNIVIEW LIGHTHUNTER</span>
+        <span class="flex items-center gap-2 text-purple-400"><i data-lucide="wifi" class="w-4 h-4"></i> EZVIZ SMART IOT</span>
+        <span class="flex items-center gap-2 text-orange-400"><i data-lucide="zap" class="w-4 h-4"></i> SEAGATE SKYHAWK AI</span>
+        <span class="flex items-center gap-2 text-teal-400"><i data-lucide="server" class="w-4 h-4"></i> RUIJIE REYEE POE</span>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 5. Advanced 3D Architectural Engine (Tactical TPV & Click-Build)  -->
+    <!-- ================================================================= -->
+    <section id="designer3d" class="py-12 px-4 sm:px-6 perspective-wrapper">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-cyan-400 font-bold text-xs mb-1">
+              <i data-lucide="layers" class="w-4 h-4"></i>
+              <span>المحرك المعماري ثلاثي الأبعاد المتقدم (Tactical 3D Simulator)</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-white">
+              بناء المنشأة بالضغط، منظور الشخص الثالث، ومحاكاة مخاريط الرؤية والسويتشات
+            </h2>
+          </div>
+          <div class="text-xs text-slate-400 hidden sm:flex items-center gap-3">
+            <span class="flex items-center gap-1 text-cyan-400"><i data-lucide="grid" class="w-3.5 h-3.5"></i> المربع = 3 أمتار</span>
+            <span>•</span>
+            <span class="flex items-center gap-1 text-amber-400"><i data-lucide="mouse-pointer" class="w-3.5 h-3.5"></i> انقر على أي كاميرا لتدويرها وفحص زواياها</span>
+          </div>
+        </div>
+
+        <!-- 3D Viewport Box with Perspective Tilt & Clean HUD Layer -->
+        <div id="tilt-box" class="rounded-2xl bg-[#06080e] border border-cyan-500/35 overflow-hidden relative shadow-2xl h-[560px] sm:h-[640px]">
+          <!-- Three.js Canvas Container -->
+          <div id="three-architectural-container" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+          <!-- ========================================================= -->
+          <!-- Minimal Floating Glass HUD Top Bar (Zero Overlap Layout)  -->
+          <!-- ========================================================= -->
+          <div class="absolute top-2.5 inset-x-2.5 z-30 flex flex-col gap-2 pointer-events-none">
+            <!-- Row 1: Specs Pill (Right) & Action Buttons (Left) -->
+            <div class="flex items-center justify-between w-full gap-2">
+              <!-- Right Side: Specs Pill -->
+              <div class="glass-panel px-2.5 sm:px-3 py-1.5 rounded-xl border border-cyan-500/40 text-[10px] sm:text-[11px] text-slate-200 flex items-center gap-1.5 sm:gap-2.5 shadow-2xl pointer-events-auto backdrop-blur-md shrink-0">
+                <span class="flex items-center gap-1 text-cyan-400 font-bold">
+                  <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                  <span id="hud-floor-name">الأرضي</span>
+                </span>
+                <span class="text-slate-700">|</span>
+                <span class="flex items-center gap-1 text-amber-400 font-bold">
+                  <i data-lucide="video" class="w-3.5 h-3.5"></i>
+                  <span id="hud-camera-count">4 كاميرات</span>
+                </span>
+                <span class="text-slate-700 hidden sm:inline">|</span>
+                <span class="hidden sm:flex items-center gap-1 text-cyan-300 font-bold">
+                  <i data-lucide="git-commit" class="w-3.5 h-3.5"></i>
+                  <span id="hud-cable-meters">55م كابل</span>
+                </span>
+                <span class="text-slate-700 hidden sm:inline">|</span>
+                <span class="hidden sm:flex items-center gap-1 text-orange-400 font-bold">
+                  <i data-lucide="hammer" class="w-3.5 h-3.5"></i>
+                  <span id="hud-trench-meters">10م حفر</span>
+                </span>
+                <span class="text-slate-700 hidden md:inline">|</span>
+                <span class="hidden md:flex items-center gap-1 text-emerald-400 font-bold">
+                  <i data-lucide="server" class="w-3.5 h-3.5"></i>
+                  <span id="hud-switch-count">1 سويتش PoE</span>
+                </span>
+              </div>
+
+              <!-- Left Side: Clean Action Icons Group -->
+              <div class="flex items-center gap-1.5 pointer-events-auto overflow-x-auto no-scrollbar py-0.5 justify-end">
+                <!-- 1. Architecture Tool (Building Walls, Stairs) -->
+                <button onclick="toggleDrawer('arch')" id="btn-toggle-arch" class="hud-icon-btn" title="المعمار وبناء الجدران والسلالم (🏢)">
+                  <i data-lucide="building" class="w-4 h-4"></i>
+                </button>
+
+                <!-- 2. Equipment Tool (Cameras, Hardware) -->
+                <button onclick="toggleDrawer('equip')" id="btn-toggle-equip" class="hud-icon-btn" title="عتاد الكاميرات والبواطات (📹)">
+                  <i data-lucide="video" class="w-4 h-4"></i>
+                </button>
+
+                <!-- 3. Tactical Third-Person View (PUBG Style) -->
+                <button onclick="CamZone3D.toggleThirdPerson()" id="btn-toggle-tpv" class="hud-icon-btn text-purple-400" title="منظور الشخص الثالث للتجول الحر (👤)">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                </button>
+
+                <!-- 4. Toggle Fullscreen / Flat Mode -->
+                <button onclick="CamZone3D.toggleFullscreen()" id="btn-toggle-fs" class="hud-icon-btn text-cyan-400" title="ملء الشاشة / شاشة مستوية (⛶)">
+                  <i data-lucide="maximize" class="w-4 h-4" id="icon-fs"></i>
+                </button>
+
+                <!-- 5. Top-Down 90° Blueprint Overview -->
+                <button onclick="CamZone3D.toggleTopDown()" id="btn-top-down" class="hud-icon-btn text-teal-400" title="الرؤية الهندسية العلوية 90° (🧭)">
+                  <i data-lucide="compass" class="w-4 h-4"></i>
+                </button>
+
+                <!-- 6. Side-by-Side Multi-Floor Layout -->
+                <button onclick="CamZone3D.toggleSideBySide()" id="btn-side-by-side" class="hud-icon-btn text-amber-400" title="تقسيم وعرض الطوابق متجاورة (◫)">
+                  <i data-lucide="columns" class="w-4 h-4"></i>
+                </button>
+
+                <!-- Secondary Utilities: Sync to Quote & Reset -->
+                <button onclick="CamZone3D.syncToQuote()" id="btn-sync-quote" class="hud-icon-btn text-emerald-400 hidden sm:inline-flex" title="مزامنة الأسعار والفاتورة">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+
+                <button onclick="CamZone3D.resetScene()" id="btn-reset-scene" class="hud-icon-btn text-slate-400 hidden sm:inline-flex" title="إعادة ضبط المشهد">
+                  <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 2: Tip Banner positioned neatly below Row 1 without overlap -->
+            <div id="active-tool-banner" class="w-full flex justify-center">
+              <div class="glass-panel px-3 py-1 rounded-full border border-cyan-500/30 text-[10px] sm:text-xs text-cyan-300 font-bold shadow-lg flex items-center gap-1.5 max-w-[95%]">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i>
+                <span id="active-tool-text" class="truncate">حدد أداة من شريط المعمار أو المعدات، أو انقر على أي كاميرا مثبتة لتدويرها</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- Collapsible Right Drawer: Architecture & Multi-Story       -->
+          <!-- ========================================================= -->
+          <div id="drawer-arch" class="hidden absolute top-14 right-3 z-30 w-80 glass-panel border border-cyan-500/40 rounded-2xl p-4 shadow-2xl transition-all duration-300">
+            <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-800 text-xs font-bold text-white">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="building" class="w-4 h-4 text-cyan-400"></i>
+                <span>المعمار والبناء بالضغط (Grid 3m)</span>
+              </span>
+              <button onclick="toggleDrawer('arch')" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Floor Switcher -->
+            <div class="space-y-1 mb-3">
+              <span class="text-[11px] text-slate-400 font-bold block">الانتقال بين الطوابق:</span>
+              <div class="grid grid-cols-3 gap-1.5 text-xs font-bold">
+                <button onclick="CamZone3D.setFloor(1)" id="btn-floor-1" class="py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-black transition">الأرضي</button>
+                <button onclick="CamZone3D.setFloor(2)" id="btn-floor-2" class="py-1.5 rounded-lg bg-slate-900 text-slate-300 hover:text-white transition">الأول</button>
+                <button onclick="CamZone3D.setFloor(3)" id="btn-floor-3" class="py-1.5 rounded-lg bg-slate-900 text-slate-300 hover:text-white transition">السطح</button>
+              </div>
+            </div>
+
+            <!-- Click-to-Build Tools -->
+            <div class="space-y-2 text-xs">
+              <!-- Wall Click-to-Build -->
+              <button onclick="activateTool('wall', 'أداة رسم الجدران: اضغط على نقطة بداية في الشبكة ثم نقطة نهاية للبناء الفوري')"
+                      class="tool-btn w-full p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-bold flex items-center justify-between transition cursor-pointer" data-tool="wall">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                  <span>بناء جدار بالضغط (Point A → Point B)</span>
+                </span>
+                <span class="text-cyan-400 font-black">+ جدار</span>
+              </button>
+
+              <!-- Stairs Tool -->
+              <button onclick="activateTool('stairs', 'أداة بناء السلالم: اضغط على الشبكة لبناء سلم يصعد للطابق التالي')"
+                      class="tool-btn w-full p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-bold flex items-center justify-between transition cursor-pointer" data-tool="stairs">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>
+                  <span>بناء سلالم صريحة (Stairs)</span>
+                </span>
+                <span class="text-indigo-400 font-black">+ سلم</span>
+              </button>
+
+              <!-- Trench Mode -->
+              <button onclick="CamZone3D.toggleTrenching()" id="btn-trench-mode" class="w-full p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-orange-400 border border-orange-500/30 font-bold flex items-center justify-between transition cursor-pointer">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+                  <span>وضع حفر ومواسير (Trench)</span>
+                </span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300">+35 ج/م</span>
+              </button>
+
+              <!-- Wall Snap Toggle -->
+              <button onclick="CamZone3D.toggleWallSnap()" id="btn-wall-snap" class="w-full p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-bold flex items-center justify-between transition cursor-pointer">
+                <span class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                  <span>محاذاة الكابلات للحوائط</span>
+                </span>
+                <span class="text-emerald-400 font-bold text-[10px]">مفعل</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- Collapsible Bottom Drawer: Advanced Hardware & Equipment   -->
+          <!-- ========================================================= -->
+          <div id="drawer-equip" class="hidden absolute bottom-14 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-30 w-full sm:w-[620px] glass-panel-cyan border border-cyan-500/40 rounded-2xl p-3 shadow-2xl transition-all duration-300">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-xs font-bold text-white">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="video" class="w-4 h-4 text-cyan-400"></i>
+                <span>عتاد وأنواع الكاميرات ومعدات التثبيت (Snap-to-Wall)</span>
+              </span>
+              <button onclick="toggleDrawer('equip')" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Equipment Action Buttons -->
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 text-xs">
+              <!-- HD Camera -->
+              <button onclick="activateTool('camera_hd', 'حدد الجدار المطلوب: سيتم تثبيت كاميرا HD AcuSense ومخروط الرؤية عليه')"
+                      class="tool-btn p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-200 font-bold flex flex-col items-center gap-1 transition" data-tool="camera_hd">
+                <i data-lucide="video" class="w-4 h-4 text-amber-400"></i>
+                <span>كاميرا HD</span>
+                <span class="text-[9px] text-slate-400">Analog HD</span>
+              </button>
+
+              <!-- IP Camera -->
+              <button onclick="activateTool('camera_ip', 'حدد الجدار المطلوب: سيتم تثبيت كاميرا IP PoE 4K ومخروط الرؤية عليه')"
+                      class="tool-btn p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-200 font-bold flex flex-col items-center gap-1 transition" data-tool="camera_ip">
+                <i data-lucide="disc" class="w-4 h-4 text-cyan-400"></i>
+                <span>كاميرا IP</span>
+                <span class="text-[9px] text-slate-400">PoE 4K</span>
+              </button>
+
+              <!-- PTZ Speed Dome -->
+              <button onclick="activateTool('camera_ptz', 'حدد الجدار أو العمود: سيتم تثبيت كاميرا PTZ المتحركة 360 درجة')"
+                      class="tool-btn p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-purple-500/50 text-slate-200 font-bold flex flex-col items-center gap-1 transition" data-tool="camera_ptz">
+                <i data-lucide="rotate-cw" class="w-4 h-4 text-purple-400"></i>
+                <span>كاميرا PTZ</span>
+                <span class="text-[9px] text-slate-400">Speed Dome</span>
+              </button>
+
+              <!-- Bracket Hardware -->
+              <button onclick="activateTool('camera_hd', 'وضع التثبيت بالحامل المعدني: انقر على الجدار لتثبيت الكاميرا مع الحامل')"
+                      class="tool-btn p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-blue-500/50 text-slate-200 font-bold flex flex-col items-center gap-1 transition">
+                <i data-lucide="wrench" class="w-4 h-4 text-blue-400"></i>
+                <span>حامل معدني</span>
+                <span class="text-[9px] text-slate-400">Bracket</span>
+              </button>
+
+              <!-- IP66 Junction Box -->
+              <button onclick="activateTool('camera_ip', 'وضع التثبيت بالبواط المعزول: انقر على الجدار لتثبيت الكاميرا مع بواطة IP66')"
+                      class="tool-btn p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-teal-500/50 text-slate-200 font-bold flex flex-col items-center gap-1 transition">
+                <i data-lucide="box" class="w-4 h-4 text-teal-400"></i>
+                <span>بواطة IP66</span>
+                <span class="text-[9px] text-slate-400">Junction Box</span>
+              </button>
+
+              <!-- PoE Switch -->
+              <button onclick="CamZone3D.setTool('switch')"
+                      class="tool-btn p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 text-slate-200 font-bold flex flex-col items-center gap-1 transition" data-tool="switch">
+                <i data-lucide="server" class="w-4 h-4 text-emerald-400"></i>
+                <span>سويتش PoE</span>
+                <span class="text-[9px] text-slate-400">4-Port</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- Interactive Camera Rotation & Lens Inspector Modal         -->
+          <!-- ========================================================= -->
+          <div id="camera-inspector-modal" class="hidden absolute top-16 left-4 z-40 w-72 glass-panel border border-cyan-500/50 rounded-2xl p-4 shadow-2xl space-y-3 pointer-events-auto">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800 text-xs font-bold text-white">
+              <span class="flex items-center gap-1.5 text-cyan-400">
+                <i data-lucide="video" class="w-4 h-4"></i>
+                <span id="inspector-cam-name">كاميرا مراقبة</span>
+              </span>
+              <button onclick="closeCameraInspector()" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Horizontal Pan (Yaw) -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] text-slate-300">
+                <span>التدوير الأفقي (Pan / Yaw):</span>
+                <span id="disp-cam-yaw" class="text-cyan-400 font-bold">0°</span>
+              </div>
+              <input type="range" id="slider-cam-yaw" min="-180" max="180" value="0"
+                     oninput="onCameraSliderInput()" class="w-full accent-cyan-500">
+            </div>
+
+            <!-- Vertical Tilt (Pitch) -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] text-slate-300">
+                <span>الإمالة الرأسية (Tilt / Pitch):</span>
+                <span id="disp-cam-pitch" class="text-amber-400 font-bold">-15°</span>
+              </div>
+              <input type="range" id="slider-cam-pitch" min="-60" max="60" value="-15"
+                     oninput="onCameraSliderInput()" class="w-full accent-amber-500">
+            </div>
+
+            <!-- Lens FOV Angle -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] text-slate-300">
+                <span>زاوية العدسة (Lens Angle):</span>
+                <span id="disp-cam-fov" class="text-emerald-400 font-bold">82° (3.6mm)</span>
+              </div>
+              <input type="range" id="slider-cam-fov" min="45" max="115" value="82"
+                     oninput="onCameraSliderInput()" class="w-full accent-emerald-500">
+            </div>
+
+            <!-- Delete Camera -->
+            <button onclick="CamZone3D.deleteSelectedEquipment()"
+                    class="w-full py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>حذف الكاميرا من المنظومة</span>
+            </button>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- True 360 Mobile Virtual Joystick Container                -->
+          <!-- ========================================================= -->
+          <div id="mobile-joystick-container" class="hidden absolute bottom-5 right-5 z-30 pointer-events-auto flex flex-col items-center gap-1 select-none">
+            <div class="virtual-joystick-base" id="joystick-base">
+              <div class="virtual-joystick-stick" id="joystick-stick"></div>
+            </div>
+            <span class="text-[9px] text-cyan-300 font-bold bg-slate-950/85 px-2 py-0.5 rounded-full border border-cyan-500/30">عصا الحركة 360°</span>
+          </div>
+
+          <!-- Tactical Third-Person Mode (TPV) Hint Overlay -->
+          <div id="tpv-hint-overlay" class="hidden absolute bottom-5 left-5 z-30 flex items-center gap-2 pointer-events-auto">
+            <button onclick="CamZone3D.toggleThirdPerson(false)" class="px-3.5 py-1.5 rounded-full bg-red-600/90 hover:bg-red-500 text-white font-bold text-xs shadow-2xl backdrop-blur-md flex items-center gap-1.5 transition">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              <span>خروج من منظور الشخص الثالث (ESC)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. Real-Time Glassy Digital Control Panels -->
+    <!-- ========================================== -->
+    <section id="calculator" class="py-14 px-4 sm:px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="inline-flex items-center gap-1.5 text-cyan-400 font-bold text-xs mb-1">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+            <span>لوحة التحكم الرقمية التفاعلية (CamZone Digital Hub)</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white">
+            حاسبة الباقات، الهارد، والجهد مع عدّادات لحظية
+          </h2>
+          <p class="text-slate-400 text-xs mt-1">
+            تسعير فوري ومباشر يدمج تكلفة الكاميرات، السويتشات، الكابلات، ومصنعيات الحفر والمواسير
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left 2 Cols: Interactive Sliders & Options -->
+          <div class="lg:col-span-2 glass-panel p-6 rounded-2xl border border-cyan-500/30 space-y-6 text-xs shadow-2xl">
+            <!-- Brand Selection -->
+            <div>
+              <label class="block font-bold text-slate-300 mb-2">منظومة الكاميرات المعتمدة:</label>
+              <div class="grid grid-cols-3 gap-3">
+                <button type="button" onclick="setBrand('hikvision')" id="btn-hikvision"
+                        class="p-3 rounded-xl border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/15">
+                  <i data-lucide="check" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Hikvision هيكفيجن</span>
+                </button>
+                <button type="button" onclick="setBrand('dahua')" id="btn-dahua"
+                        class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 font-bold flex items-center justify-center gap-2 hover:bg-slate-800">
+                  <span>Dahua داهوا</span>
+                </button>
+                <button type="button" onclick="setBrand('uniview')" id="btn-uniview"
+                        class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 font-bold flex items-center justify-center gap-2 hover:bg-slate-800">
+                  <span>Uniview يوني فيو</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Resolution Selection -->
+            <div>
+              <label class="block font-bold text-slate-300 mb-2">دقة وضوح الحساس (Sensor Resolution):</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" onclick="setResolution('2mp')" id="btn-res-2mp" class="py-2.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800">
+                  2 ميجا (Full HD 1080p)
+                </button>
+                <button type="button" onclick="setResolution('5mp')" id="btn-res-5mp" class="py-2.5 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold">
+                  5 ميجا (2K Super Clear)
+                </button>
+                <button type="button" onclick="setResolution('8mp')" id="btn-res-8mp" class="py-2.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800">
+                  8 ميجا (4K Ultra UHD)
+                </button>
+              </div>
+            </div>
+
+            <!-- Camera Counts (Indoor / Outdoor) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-slate-300">كاميرات داخلية (Dome):</span>
+                  <span id="indoor-count-disp" class="text-cyan-400 font-black text-sm">2 كاميرا</span>
+                </div>
+                <input type="range" min="0" max="24" value="2" oninput="updateCamCount('indoor', this.value)" class="w-full accent-cyan-500">
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-slate-300">كاميرات خارجية مقاومة للطقس (Bullet):</span>
+                  <span id="outdoor-count-disp" class="text-cyan-400 font-black text-sm">2 كاميرا</span>
+                </div>
+                <input type="range" min="0" max="24" value="2" oninput="updateCamCount('outdoor', this.value)" class="w-full accent-cyan-500">
+              </div>
+            </div>
+
+            <!-- Cables & Trenching Sliders -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+                <div class="flex justify-between font-bold text-slate-300 mb-1">
+                  <span>أمتار كابلات نحاس نقي:</span>
+                  <span id="cable-meters-disp" class="text-cyan-400 font-bold">60 متر</span>
+                </div>
+                <input type="range" min="20" max="400" step="10" value="60" oninput="updateCables(this.value)" class="w-full accent-cyan-500">
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-slate-950/70 border border-orange-500/30">
+                <div class="flex justify-between font-bold text-orange-300 mb-1">
+                  <span>مناطق حفر ومواسير فلكسيبل:</span>
+                  <span id="trench-meters-disp" class="text-orange-400 font-bold">15 متر (+525 ج)</span>
+                </div>
+                <input type="range" min="0" max="150" step="5" value="15" oninput="updateTrenchMeters(this.value)" class="w-full accent-orange-500">
+              </div>
+            </div>
+
+            <!-- Networking & Switches -->
+            <div class="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/30 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-emerald-300">سويتشات PoE وبواطات التجميع:</div>
+                <div class="text-[11px] text-slate-400">توصيل وتشغيل عبر كابل شبكة واحد وتجميع احترافي</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-slate-300">سويتش PoE:</label>
+                <select id="switch-selector" onchange="recalculateQuote()" class="bg-slate-900 border border-slate-700 text-emerald-400 rounded-lg p-1.5 font-bold">
+                  <option value="0">بدون سويتش (كابل مباشر)</option>
+                  <option value="1" selected>1 سويتش PoE 4-Port (+1,250 ج)</option>
+                  <option value="2">2 سويتش PoE 8-Port (+2,400 ج)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Storage & Hard Drive -->
+            <div>
+              <label class="block font-bold text-slate-300 mb-2">سعة الهارد ديسك (WD Purple 24/7):</label>
+              <div class="grid grid-cols-4 gap-2">
+                <button type="button" onclick="setStorage('1tb')" id="btn-hdd-1tb" class="py-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800">
+                  1 تيرابايت
+                </button>
+                <button type="button" onclick="setStorage('2tb')" id="btn-hdd-2tb" class="py-2 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold">
+                  2 تيرابايت
+                </button>
+                <button type="button" onclick="setStorage('4tb')" id="btn-hdd-4tb" class="py-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800">
+                  4 تيرابايت
+                </button>
+                <button type="button" onclick="setStorage('8tb')" id="btn-hdd-8tb" class="py-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800">
+                  8 تيرابايت
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Col: Glossy Black Neon Counter Output -->
+          <div class="glass-panel-cyan p-6 rounded-2xl flex flex-col justify-between space-y-5">
+            <div>
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 class="font-black text-white text-base flex items-center gap-1.5">
+                  <i data-lucide="receipt" class="w-4 h-4 text-cyan-400"></i>
+                  <span>الفاتورة الرقمية اللحظية</span>
+                </h3>
+                <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">CamZone Real-Time</span>
+              </div>
+
+              <!-- Breakdown List -->
+              <div class="py-3 space-y-2 text-xs border-b border-slate-800">
+                <div class="flex justify-between text-slate-300">
+                  <span>جهاز التسجيل DVR/NVR:</span>
+                  <span id="dvr-summary-disp" class="font-bold text-white">4 قنوات</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>الكاميرات الإجمالية:</span>
+                  <span id="total-cam-disp" class="font-bold text-white">4 كاميرات</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>سويتش PoE ومحولات:</span>
+                  <span id="switch-summary-disp" class="font-bold text-emerald-400">1 سويتش 4-Port</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>الكابلات والحفر:</span>
+                  <span id="cable-summary-disp" class="font-bold text-orange-400">60م كابل + 15م حفر</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>الهارد ديسك:</span>
+                  <span id="storage-summary-disp" class="font-bold text-white">2TB WD Purple</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>مصنعية التركيب والبرمجة:</span>
+                  <span id="labor-summary-disp" class="font-bold text-cyan-400">1,200 ج</span>
+                </div>
+              </div>
+
+              <!-- Big Animated Counter -->
+              <div class="pt-4 text-center">
+                <span class="text-xs text-slate-400 block mb-1">الإجمالي الشامل للتوريد والتركيب:</span>
+                <div class="text-4xl font-black text-cyan-400 flex items-center justify-center gap-1">
+                  <span id="quote-total-price">13,015</span>
+                  <span class="text-lg font-bold text-slate-300">ج.م</span>
+                </div>
+                <span class="text-[11px] text-slate-400 mt-1 block">الدفع عند الاستلام والمعاينة لكافة محافظات مصر</span>
+              </div>
+            </div>
+
+            <!-- Actions: Direct Call & Add to Cart -->
+            <div class="space-y-2 pt-2">
+              <a href="tel:01121275069" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/20">
+                <i data-lucide="phone-call" class="w-4 h-4"></i>
+                <span>طلب وحجز فوري تليفونياً: 01121275069</span>
+              </a>
+
+              <button onclick="addQuoteToCart()" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-cyan-500/40 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                <span>إضافة كامل المنظومة لسلة المشتريات</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 7. Scalable Shop Section                   -->
+    <!-- ========================================== -->
+    <section id="shop" class="py-14 px-4 sm:px-6 bg-[#080a10]">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div>
+            <div class="inline-flex items-center gap-1.5 text-cyan-400 font-bold text-xs mb-1">
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+              <span>المتجر المعتمد للأجهزة والمكونات</span>
+            </div>
+            <h2 class="text-2xl font-black text-white">منتجات أصلية بالضمان الرسمي المعتمد</h2>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+            <button onclick="filterShop('all')" class="category-btn active px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 transition">الكل</button>
+            <button onclick="filterShop('cameras')" class="category-btn px-3.5 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white transition">الكاميرات</button>
+            <button onclick="filterShop('recorders')" class="category-btn px-3.5 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white transition">أجهزة التسجيل</button>
+            <button onclick="filterShop('storage')" class="category-btn px-3.5 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white transition">الهارد ديسك</button>
+            <button onclick="filterShop('switches')" class="category-btn px-3.5 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white transition">السويتشات والكابلات</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Product Grid -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Injected dynamically by JS via PRODUCTS_CATALOG -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 8. Technician Certification Portal         -->
+    <!-- ========================================== -->
+    <section id="technician" class="py-14 px-4 sm:px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="glass-panel p-6 sm:p-8 rounded-2xl border border-purple-500/30 space-y-6 shadow-2xl">
+          <div class="text-center space-y-1">
+            <span class="inline-flex items-center gap-1 text-purple-400 font-bold text-xs">
+              <i data-lucide="wrench" class="w-4 h-4"></i>
+              <span>بوابة انضمام الفنيين المعتمدين</span>
+            </span>
+            <h3 class="text-2xl font-black text-white">انضم لشبكة فنيي CamZone-EG في محافظتك</h3>
+            <p class="text-slate-400 text-xs">احصل على طلبات معاينة وتركيب دورية مع توريد المكونات بأسعار الجملة المعتمدة</p>
+          </div>
+
+          <!-- Conditions Card -->
+          <div class="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs space-y-2">
+            <h4 class="font-bold text-purple-300 text-sm mb-2 flex items-center gap-1.5">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+              <span>شروط الاعتماد الميداني:</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300">
+              <div>✓ خبرة سنتين على الأقل في سحب وتركيب كابلات RG59 و UTP CAT6.</div>
+              <div>✓ إتقان برمجة الراوترات وفتح البورتات وربط P2P Hik-Connect و DMSS.</div>
+              <div>✓ الالتزام بالمواعيد الرسمية وأمانة التسعير وتسليم العميل فحصاً شاملاً.</div>
+              <div>✓ توفر سيارة أو وسيلة انتقال لتنفيذ المعاينات وسرعة الاستجابة.</div>
+            </div>
+          </div>
+
+          <form onsubmit="submitTechForm(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-bold text-slate-300 mb-1">الاسم بالكامل:</label>
+                <input type="text" id="tech-name" required placeholder="محمد أحمد محمود" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-300 mb-1">رقم الهاتف الأساسي:</label>
+                <input type="tel" id="tech-phone" required placeholder="01121275069" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-bold text-slate-300 mb-1">المحافظة ونطاق التغطية:</label>
+                <select id="tech-gov" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white">
+                  <option value="القاهرة">القاهرة</option>
+                  <option value="الجيزة">الجيزة</option>
+                  <option value="الإسكندرية">الإسكندرية</option>
+                  <option value="القليوبية">القليوبية</option>
+                  <option value="الشرقية">الشرقية</option>
+                  <option value="الدقهلية">الدقهلية</option>
+                  <option value="أخرى">محافظة أخرى</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-300 mb-1">سنوات الخبرة:</label>
+                <select id="tech-exp" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white">
+                  <option value="2">سنتان</option>
+                  <option value="3-5" selected>3 إلى 5 سنوات</option>
+                  <option value="5+">أكثر من 5 سنوات</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-300 mb-1">ملاحظات أو معدات تمتلكها (جهاز اختبار كاميرات CCTV Tester، شنيور هيلتي، أجهزة شبكات):</label>
+              <textarea id="tech-notes" rows="2" placeholder="أمتلك جهاز فحص كاميرات عالي الدقة..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-black text-sm transition shadow-lg shadow-purple-500/20 cursor-pointer">
+              إرسال طلب الانضمام والاعتماد الميداني
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 9. Super Admin Glassy Login Modal (Key 🔑) -->
+  <!-- ========================================== -->
+  <div id="super-admin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+    <div class="w-full max-w-2xl rounded-2xl glass-panel-amber border border-amber-500/40 p-6 text-xs text-slate-200 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="key" class="w-5 h-5 text-amber-400"></i>
+          <span>لوحة تحكم المشرف العام (Super Admin Hub)</span>
+        </h3>
+        <button onclick="closeModals()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <!-- Auth State / Orders View -->
+      <div id="admin-auth-view" class="space-y-3">
+        <p class="text-slate-300">أدخل رمز المرور السري للدخول إلى سجل طلبات الفنيين والعملاء:</p>
+        <input type="password" id="admin-passcode" placeholder="رمز المشرف (Master PIN)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-bold">
+        <button onclick="authenticateAdmin()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black cursor-pointer">
+          دخول لوحة التحكم
+        </button>
+      </div>
+
+      <div id="admin-dashboard-view" class="hidden space-y-4">
+        <div class="flex justify-between items-center bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+          <div>
+            <div class="text-[11px] text-slate-400">حالة قاعدة البيانات (Supabase):</div>
+            <div class="text-emerald-400 font-bold">متصل • qlzgcwmdaiverqrbmmah</div>
+          </div>
+          <button onclick="logoutAdmin()" class="px-2.5 py-1 rounded bg-slate-900 text-red-400 hover:bg-slate-800 text-[11px] font-bold">تسجيل خروج</button>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-white text-xs">سجل الطلبات الواردة مؤخراً:</h4>
+          <div id="admin-orders-list" class="max-h-56 overflow-y-auto space-y-2 text-[11px]">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 10. Auxiliary Modals (Storage, Power, Survey)-->
+  <!-- ========================================== -->
+  <div id="storage-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="w-full max-w-lg rounded-2xl glass-panel-cyan p-6 text-xs text-slate-200 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="hard-drive" class="w-5 h-5 text-cyan-400"></i>
+          <span>حاسبة سعة الهارد ديسك وأيام التسجيل</span>
+        </h3>
+        <button onclick="closeModals()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block mb-1 text-slate-400">عدد الكاميرات الإجمالي:</label>
+          <input type="number" id="calc-cam-num" value="4" min="1" max="64" oninput="runStorageCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        </div>
+        <div>
+          <label class="block mb-1 text-slate-400">تقنية الضغط (Codec):</label>
+          <select id="calc-codec" onchange="runStorageCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+            <option value="h265plus" selected>H.265+ (توفير 70% من المساحة - حديث)</option>
+            <option value="h265">H.265 (توفير 50%)</option>
+            <option value="h264">H.264 (عادي)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block mb-1 text-slate-400">سعة الهارد ديسك (WD Purple):</label>
+          <select id="calc-hdd-size" onchange="runStorageCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+            <option value="1">1 تيرابايت</option>
+            <option value="2" selected>2 تيرابايت</option>
+            <option value="4">4 تيرابايت</option>
+            <option value="8">8 تيرابايت</option>
+          </select>
+        </div>
+        <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-center">
+          <div class="text-slate-400 text-xs">مدة التسجيل المتوقعة بدون مسح:</div>
+          <div id="storage-result-days" class="text-3xl font-black text-cyan-400 my-1">25 إلى 30 يوماً</div>
+          <div class="text-[11px] text-slate-400">عند تفعيل خاصية التسجيل مع الحركة (Motion Detection)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="power-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="w-full max-w-lg rounded-2xl glass-panel-cyan p-6 text-xs text-slate-200 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
+          <span>فحص الباور سبلاي وهبوط الجهد (Voltage Drop)</span>
+        </h3>
+        <button onclick="closeModals()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block mb-1 text-slate-400">أطول مسار كابل لكاميرا (بالمتر):</label>
+          <input type="number" id="calc-cable-dist" value="45" min="5" max="250" oninput="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        </div>
+        <div>
+          <label class="block mb-1 text-slate-400">عدد الكاميرات:</label>
+          <input type="number" id="calc-power-cams" value="4" min="1" max="32" oninput="runPowerCalculation()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        </div>
+        <div id="power-calc-output" class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="survey-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="w-full max-w-lg rounded-2xl glass-panel-cyan p-6 text-xs text-slate-200 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="map-pin" class="w-5 h-5 text-emerald-400"></i>
+          <span>طلب معاينة موقع هندسية مجانية</span>
+        </h3>
+        <button onclick="closeModals()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="submitSurveyForm(event)" class="space-y-3">
+        <div>
+          <label class="block mb-1 text-slate-400">الاسم:</label>
+          <input type="text" id="survey-name" required placeholder="أحمد سعيد" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        </div>
+        <div>
+          <label class="block mb-1 text-slate-400">رقم الهاتف:</label>
+          <input type="tel" id="survey-phone" required placeholder="01121275069" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        </div>
+        <div>
+          <label class="block mb-1 text-slate-400">المحافظة والعنوان:</label>
+          <input type="text" id="survey-addr" required placeholder="القاهرة - المعادي" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+        </div>
+        <div>
+          <label class="block mb-1 text-slate-400">نوع العقار:</label>
+          <select id="survey-type" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold">
+            <option value="فيلا أو منزل خاص">فيلا أو منزل خاص</option>
+            <option value="محل تجاري أو كافيه">محل تجاري أو كافيه</option>
+            <option value="مصنع أو مخزن">مصنع أو مخزن</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm cursor-pointer shadow-lg shadow-emerald-500/20">
+          تأكيد موعد المعاينة المجانية
+        </button>
+
+        <div class="pt-2 text-center text-[11px] text-slate-400">
+          أو تواصل فوراً عبر <a href="https://m.me/1402785336244205" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline font-bold">مسنجر CamZone</a> أو هاتفياً <a href="tel:01121275069" class="text-emerald-400 font-bold">01121275069</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cart Slide-out Drawer -->
+  <div id="cart-drawer" class="hidden fixed inset-0 z-50 overflow-hidden">
+    <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="toggleCartDrawer()"></div>
+    <div class="fixed inset-y-0 left-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-[#0a0d17] border-r border-cyan-500/30 p-6 flex flex-col justify-between text-xs text-slate-200 shadow-2xl">
+        <div>
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <h3 class="text-base font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="shopping-cart" class="w-5 h-5 text-cyan-400"></i>
+              <span>سلة المشتريات (الدفع عند الاستلام COD)</span>
+            </h3>
+            <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+          </div>
+          <div id="cart-items-list" class="py-4 space-y-3 max-h-[50vh] overflow-y-auto">
+            <!-- Items injected by JS -->
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 space-y-3">
+          <div class="flex justify-between items-center text-sm font-bold">
+            <span>الإجمالي المستحق (COD):</span>
+            <span id="cart-total-price" class="text-cyan-400 text-xl font-black">0 ج.م</span>
+          </div>
+
+          <form onsubmit="checkoutCart(event)" class="space-y-2">
+            <input type="text" id="cust-name" required placeholder="اسم المستلم بالكامل" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+            <input type="tel" id="cust-phone" required placeholder="رقم الهاتف للمعاينة والتسليم" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+            <input type="text" id="cust-addr" required placeholder="عنوان التوصيل والمحافظة" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+            <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm cursor-pointer shadow-lg shadow-cyan-500/25">
+              تأكيد الطلب وشحن المكونات فوراً
+            </button>
+          </form>
+
+          <!-- Direct Messenger Order Channel & Phone Call -->
+          <div class="grid grid-cols-2 gap-2">
+            <a href="https://m.me/1402785336244205" target="_blank" rel="noopener noreferrer" class="py-2.5 px-2 rounded-xl bg-blue-500/15 border border-blue-500/40 text-blue-400 hover:bg-blue-500/25 font-bold flex items-center justify-center gap-1.5 transition text-center">
+              <i data-lucide="message-square" class="w-4 h-4 shrink-0"></i>
+              <span>شات مسنجر</span>
+            </a>
+            <a href="tel:01121275069" class="py-2.5 px-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/25 font-bold flex items-center justify-center gap-1.5 transition text-center">
+              <i data-lucide="phone-call" class="w-4 h-4 shrink-0"></i>
+              <span>01121275069</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Direct Call Action -->
+  <div class="fixed bottom-5 left-5 z-40 flex flex-col items-center gap-2">
+    <a href="tel:01121275069" class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs shadow-2xl shadow-emerald-500/30 transition transform hover:scale-105" title="اتصل بنا الآن">
+      <i data-lucide="phone-call" class="w-4 h-4 text-slate-950"></i>
+      <span>اتصال مباشر: 01121275069</span>
+    </a>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 11. Footer                                 -->
+  <!-- ========================================== -->
+  <footer class="bg-[#050608] border-t border-slate-800/80 py-8 px-4 text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-white">CamZone-EG</span>
+        <span>• حقوق التصميم والهندسة محفوظة &copy; 2026</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="tel:01121275069" class="hover:text-cyan-400">هاتف الدعم: 01121275069</a>
+        <a href="https://m.me/1402785336244205" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400">شات مسنجر</a>
+        <a href="#designer3d" class="hover:text-cyan-400">المصمم المعماري 3D</a>
+        <a href="#calculator" class="hover:text-cyan-400">حاسبة الباقات</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- 12. Complete Pure Vanilla JavaScript Engine-->
+  <!-- ========================================== -->
+  <script>
+    // -------------------------------------------------------------
+    // A. Hero Interactive Laser-Ray Logo Canvas (Center 'C' & Lens)
+    // -------------------------------------------------------------
+    (function initHeroLaserLogo() {
+      try {
+        const canvas = document.getElementById('hero-laser-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        let mouse = { x: -1000, y: -1000, active: false };
+        let aim = { x: 0, y: 0 };
+        let time = 0;
+
+        function resize() {
+          w = canvas.width = canvas.parentElement.clientWidth || window.innerWidth;
+          h = canvas.height = canvas.parentElement.clientHeight || 540;
+          aim.x = w * 0.7;
+          aim.y = h * 0.4;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const updateCoords = (cx, cy) => {
+          const rect = canvas.getBoundingClientRect();
+          mouse.x = cx - rect.left;
+          mouse.y = cy - rect.top;
+          mouse.active = true;
+        };
+
+        canvas.parentElement.addEventListener('mousemove', (e) => updateCoords(e.clientX, e.clientY));
+        canvas.parentElement.addEventListener('touchmove', (e) => {
+          if (e.touches.length > 0) updateCoords(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        window.addEventListener('mouseout', () => { mouse.active = false; });
+
+        function render() {
+          ctx.clearRect(0, 0, w, h);
+          time += 0.02;
+
+          // 1. Subtle Background Grid
+          const cols = 24;
+          const rows = 14;
+          const xStep = w / cols;
+          const yStep = h / rows;
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'rgba(6, 182, 212, 0.07)';
+
+          for (let i = 0; i <= cols; i++) {
+            ctx.beginPath();
+            ctx.moveTo(i * xStep, 0);
+            ctx.lineTo(i * xStep, h);
+            ctx.stroke();
+          }
+          for (let j = 0; j <= rows; j++) {
+            ctx.beginPath();
+            ctx.moveTo(0, j * yStep);
+            ctx.lineTo(w, j * yStep);
+            ctx.stroke();
+          }
+
+          // Center Logo Position
+          const cx = w / 2;
+          const cy = h / 2 - 15;
+
+          // Target point (interpolates towards mouse or auto-sways smoothly)
+          let targetX = mouse.active ? mouse.x : (cx + Math.cos(time * 0.8) * (w * 0.38));
+          let targetY = mouse.active ? mouse.y : (cy + Math.sin(time * 1.1) * (h * 0.28) + 40);
+
+          aim.x += (targetX - aim.x) * 0.07;
+          aim.y += (targetY - aim.y) * 0.07;
+
+          // Laser Origin: Central Camera Lens inside Emblem
+          const lensX = cx;
+          const lensY = cy;
+
+          // 2. Draw Transparent Laser Light Cone (Emanating from camera lens)
+          const angle = Math.atan2(aim.y - lensY, aim.x - lensX);
+          const spread = 0.28; // ~32 degrees FOV cone
+          const rayDistance = Math.max(w, h) * 1.1;
+
+          const p1X = lensX + Math.cos(angle - spread) * rayDistance;
+          const p1Y = lensY + Math.sin(angle - spread) * rayDistance;
+          const p2X = lensX + Math.cos(angle + spread) * rayDistance;
+          const p2Y = lensY + Math.sin(angle + spread) * rayDistance;
+
+          // Cone Gradient
+          const coneGrad = ctx.createRadialGradient(lensX, lensY, 5, lensX, lensY, rayDistance * 0.85);
+          coneGrad.addColorStop(0, 'rgba(6, 182, 212, 0.45)');
+          coneGrad.addColorStop(0.15, 'rgba(14, 165, 233, 0.20)');
+          coneGrad.addColorStop(0.6, 'rgba(6, 182, 212, 0.05)');
+          coneGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(lensX, lensY);
+          ctx.lineTo(p1X, p1Y);
+          ctx.lineTo(p2X, p2Y);
+          ctx.closePath();
+          ctx.fillStyle = coneGrad;
+          ctx.fill();
+
+          // High-Energy Central Core Laser Ray
+          const coreGrad = ctx.createLinearGradient(lensX, lensY, aim.x, aim.y);
+          coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+          coreGrad.addColorStop(0.2, 'rgba(6, 182, 212, 0.85)');
+          coreGrad.addColorStop(1, 'rgba(56, 189, 248, 0.2)');
+
+          ctx.beginPath();
+          ctx.moveTo(lensX, lensY);
+          ctx.lineTo(aim.x, aim.y);
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = coreGrad;
+          ctx.shadowColor = '#06b6d4';
+          ctx.shadowBlur = 12;
+          ctx.stroke();
+
+          // Laser Target Crosshair / Reticle
+          ctx.beginPath();
+          ctx.arc(aim.x, aim.y, 14, 0, Math.PI * 2);
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = 'rgba(6, 182, 212, 0.6)';
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(aim.x, aim.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fill();
+          ctx.restore();
+
+          // 3. Draw Stylized Center Emblem: High-Tech 'C' + 3D Security Camera
+          ctx.save();
+          ctx.translate(cx, cy);
+
+          // Outer Cyber Glowing 'C'
+          ctx.shadowColor = '#06b6d4';
+          ctx.shadowBlur = 20;
+
+          // Main 'C' Arc (Geometric, Open on Right)
+          ctx.beginPath();
+          ctx.arc(0, 0, 48, 0.65 * Math.PI, 1.45 * Math.PI, false);
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = 'rgba(6, 182, 212, 0.75)';
+          ctx.stroke();
+
+          // Upper and Lower Horizontal Terminal Bars of the 'C'
+          ctx.beginPath();
+          ctx.moveTo(-18, -45);
+          ctx.lineTo(34, -45);
+          ctx.lineTo(34, -36);
+          ctx.moveTo(-18, 45);
+          ctx.lineTo(34, 45);
+          ctx.lineTo(34, 36);
+          ctx.lineWidth = 3.5;
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+          ctx.stroke();
+
+          // Inner Decorative Cyber Ring
+          ctx.beginPath();
+          ctx.arc(0, 0, 36, 0, Math.PI * 2);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+          ctx.stroke();
+
+          // Central Security Camera Lens Body
+          ctx.rotate(angle);
+
+          // Camera Housing
+          ctx.fillStyle = '#0a0f1d';
+          ctx.strokeStyle = '#06b6d4';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(-16, -12, 24, 24, 6) : ctx.rect(-16, -12, 24, 24);
+          ctx.fill();
+          ctx.stroke();
+
+          // Camera Lens Rings
+          ctx.beginPath();
+          ctx.arc(8, 0, 8, 0, Math.PI * 2);
+          ctx.fillStyle = '#0284c7';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(10, 0, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = '#ffffff';
+          ctx.shadowBlur = 10;
+          ctx.fill();
+
+          // Active Status Blinking LED (Green/Cyan)
+          ctx.beginPath();
+          ctx.arc(-8, -6, 2, 0, Math.PI * 2);
+          ctx.fillStyle = (Math.sin(time * 6) > 0) ? '#10b981' : '#047857';
+          ctx.fill();
+
+          ctx.restore();
+
+          requestAnimationFrame(render);
+        }
+        render();
+      } catch (e) {
+        console.warn('Hero laser logo canvas error handled:', e);
+      }
+    })();
+
+    // -------------------------------------------------------------
+    // B. Clean HUD UI & Localization Bridge for CamZone3D Engine
+    // -------------------------------------------------------------
+    function toggleDrawer(name) {
+      const archDrawer = document.getElementById('drawer-arch');
+      const equipDrawer = document.getElementById('drawer-equip');
+      const archBtn = document.getElementById('btn-toggle-arch');
+      const equipBtn = document.getElementById('btn-toggle-equip');
+
+      if (name === 'arch') {
+        const isHidden = archDrawer.classList.contains('hidden');
+        archDrawer.classList.toggle('hidden');
+        equipDrawer.classList.add('hidden');
+        archBtn.classList.toggle('active', isHidden);
+        equipBtn.classList.remove('active');
+      } else if (name === 'equip') {
+        const isHidden = equipDrawer.classList.contains('hidden');
+        equipDrawer.classList.toggle('hidden');
+        archDrawer.classList.add('hidden');
+        equipBtn.classList.toggle('active', isHidden);
+        archBtn.classList.remove('active');
+      }
+    }
+
+    function activateTool(toolName, tipText) {
+      if (window.CamZone3D) {
+        window.CamZone3D.setTool(toolName);
+      }
+      const bannerText = document.getElementById('active-tool-text');
+      if (bannerText && tipText) {
+        bannerText.textContent = tipText;
+      }
+      // Auto close drawers to maximize viewing area
+      document.getElementById('drawer-arch')?.classList.add('hidden');
+      document.getElementById('drawer-equip')?.classList.add('hidden');
+      document.getElementById('btn-toggle-arch')?.classList.remove('active');
+      document.getElementById('btn-toggle-equip')?.classList.remove('active');
+    }
+
+    // Localization callback called by designer3d.js
+    window.update3DMetricsHUD = function (metrics) {
+      const floorNames = { 1: 'الدور الأرضي', 2: 'الدور الأول', 3: 'السطح / الروف' };
+      const floorEl = document.getElementById('hud-floor-name');
+      if (floorEl) floorEl.textContent = floorNames[metrics.floor] || 'الدور الأرضي';
+
+      const camEl = document.getElementById('hud-camera-count');
+      if (camEl) camEl.textContent = `${metrics.cams} كاميرات`;
+
+      const cableEl = document.getElementById('hud-cable-meters');
+      if (cableEl) cableEl.textContent = `${metrics.cables}م كابل`;
+
+      const trenchEl = document.getElementById('hud-trench-meters');
+      if (trenchEl) trenchEl.textContent = `${metrics.trench}م حفر`;
+
+      const swEl = document.getElementById('hud-switch-count');
+      if (swEl) swEl.textContent = `${metrics.switches} سويتش PoE`;
+
+      // Update calculator displays
+      const cableDisp = document.getElementById('cable-meters-disp');
+      if (cableDisp) cableDisp.textContent = `${metrics.cables} متر`;
+      const trenchDisp = document.getElementById('trench-meters-disp');
+      if (trenchDisp) trenchDisp.textContent = `${metrics.trench} متر (+${metrics.trench * 35} ج)`;
+
+      [1, 2, 3].forEach(l => {
+        const btn = document.getElementById('btn-floor-' + l);
+        if (btn) {
+          if (l === metrics.floor) {
+            btn.className = 'py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-black transition';
+          } else {
+            btn.className = 'py-1.5 rounded-lg bg-slate-900 text-slate-300 hover:text-white transition';
+          }
+        }
+      });
+    };
+
+    // Notification callback called by designer3d.js
+    window.showEngineNotificationKey = function (key) {
+      const messages = {
+        wall_point_a: 'تم تحديد نقطة بداية الجدار (نقطة أ). اضغط على نقطة أخرى في الشبكة لبناء الجدار كاملاً.',
+        wall_created: 'تم بناء الجدار بنجاح وتحديث مسارات الكابلات والسويتشات.',
+        stairs_created: 'تم بناء السلم المعماري للصعود واستكشاف الأدوار العليا.',
+        camera_snapped: 'تم تثبيت الكاميرا ومخروط الرؤية بالالتصاق التلقائي على سطح الجدار.',
+        camera_deleted: 'تم حذف الكاميرا وإعادة حساب شبكة الكابلات والتسعير.',
+        side_by_side_active: 'تم تفعيل العرض المتجاور للطوابق جنبًا إلى جنب مع إبقاء مخاريط الرؤية مشعة لكشف الزوايا العمياء.',
+        synced_to_quote: 'تم تحديث الفاتورة الرقمية بناءً على مكونات الـ 3D!',
+        scene_reset: 'تمت إعادة ضبط فضاء المنشأة والمكونات.'
+      };
+      showNotification(messages[key] || 'تم تنفيذ العملية بنجاح');
+    };
+
+    // Camera Inspector UI Callback
+    window.updateInspectorUI = function (camData) {
+      const inspector = document.getElementById('camera-inspector-modal');
+      if (!inspector) return;
+      inspector.classList.remove('hidden');
+
+      const names = {
+        camera_ptz: 'كاميرا متحركة PTZ Speed Dome (دوران 360°)',
+        camera_ip: 'كاميرا شبكية IP PoE 4K فك تشفير حقيقي',
+        camera_hd: 'كاميرا مراقبة HD 5MP AcuSense'
+      };
+      document.getElementById('inspector-cam-name').textContent = names[camData.type] || 'كاميرا مراقبة';
+
+      const yawDeg = Math.round((camData.yaw * 180) / Math.PI);
+      const pitchDeg = Math.round((camData.pitch * 180) / Math.PI);
+      const fovVal = Math.round(camData.fov);
+
+      document.getElementById('slider-cam-yaw').value = yawDeg;
+      document.getElementById('disp-cam-yaw').textContent = `${yawDeg}°`;
+
+      document.getElementById('slider-cam-pitch').value = pitchDeg;
+      document.getElementById('disp-cam-pitch').textContent = `${pitchDeg}°`;
+
+      document.getElementById('slider-cam-fov').value = fovVal;
+      document.getElementById('disp-cam-fov').textContent = `${fovVal}° (${fovVal > 95 ? 'عدسة واسعة 2.8mm' : fovVal > 70 ? 'عدسة قياسية 3.6mm' : 'عدسة مركزة 6mm'})`;
+    };
+
+    function onCameraSliderInput() {
+      const yaw = document.getElementById('slider-cam-yaw').value;
+      const pitch = document.getElementById('slider-cam-pitch').value;
+      const fov = document.getElementById('slider-cam-fov').value;
+
+      document.getElementById('disp-cam-yaw').textContent = `${yaw}°`;
+      document.getElementById('disp-cam-pitch').textContent = `${pitch}°`;
+      document.getElementById('disp-cam-fov').textContent = `${fov}°`;
+
+      if (window.CamZone3D) {
+        window.CamZone3D.updateSelectedCamera(yaw, pitch, fov);
+      }
+    }
+
+    function closeCameraInspector() {
+      document.getElementById('camera-inspector-modal')?.classList.add('hidden');
+      if (window.CamZone3D) {
+        window.CamZone3D.selectedCamera = null;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // C. Virtual 360 Mobile Touch Joystick Listener
+    // -------------------------------------------------------------
+    (function initTouchJoystick() {
+      const base = document.getElementById('joystick-base');
+      const stick = document.getElementById('joystick-stick');
+      if (!base || !stick) return;
+
+      let touchId = null;
+      let center = { x: 0, y: 0 };
+
+      base.addEventListener('touchstart', (e) => {
+        const touch = e.changedTouches[0];
+        touchId = touch.identifier;
+        const rect = base.getBoundingClientRect();
+        center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        if (window.CamZone3D) window.CamZone3D.joystickVector.active = true;
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!window.CamZone3D || !window.CamZone3D.joystickVector.active) return;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          if (t.identifier === touchId) {
+            const rawDx = t.clientX - center.x;
+            const rawDy = t.clientY - center.y;
+            const maxRadius = 38;
+            const dist = Math.min(maxRadius, Math.hypot(rawDx, rawDy));
+            const angle = Math.atan2(rawDy, rawDx);
+
+            const dx = Math.cos(angle) * dist;
+            const dy = Math.sin(angle) * dist;
+
+            stick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+
+            window.CamZone3D.joystickVector.x = dx / maxRadius;
+            window.CamZone3D.joystickVector.y = dy / maxRadius;
+          }
+        }
+      }, { passive: true });
+
+      const endTouch = () => {
+        if (!window.CamZone3D) return;
+        window.CamZone3D.joystickVector.active = false;
+        window.CamZone3D.joystickVector.x = 0;
+        window.CamZone3D.joystickVector.y = 0;
+        stick.style.transform = 'translate(-50%, -50%)';
+      };
+      window.addEventListener('touchend', endTouch);
+      window.addEventListener('touchcancel', endTouch);
+    })();
+
+    // -------------------------------------------------------------
+    // D. Real-Time Digital Calculator & Quotes
+    // -------------------------------------------------------------
+    let calcState = {
+      brand: 'hikvision',
+      resolution: '5mp',
+      indoorCount: 2,
+      outdoorCount: 2,
+      cableMeters: 60,
+      trenchMeters: 15,
+      storageTb: '2tb',
+      poeSwitches: 1,
+    };
+
+    function setBrand(brand) {
+      calcState.brand = brand;
+      ['hikvision', 'dahua', 'uniview'].forEach(b => {
+        const btn = document.getElementById('btn-' + b);
+        if (b === brand) {
+          btn.className = 'p-3 rounded-xl border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/15';
+        } else {
+          btn.className = 'p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 font-bold flex items-center justify-center gap-2 hover:bg-slate-800';
+        }
+      });
+      recalculateQuote();
+    }
+
+    function setResolution(res) {
+      calcState.resolution = res;
+      ['2mp', '5mp', '8mp'].forEach(r => {
+        const btn = document.getElementById('btn-res-' + r);
+        if (r === res) {
+          btn.className = 'py-2.5 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold';
+        } else {
+          btn.className = 'py-2.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800';
+        }
+      });
+      recalculateQuote();
+    }
+
+    function updateCamCount(type, val) {
+      const count = parseInt(val, 10);
+      if (type === 'indoor') {
+        calcState.indoorCount = count;
+        document.getElementById('indoor-count-disp').textContent = count + ' كاميرا';
+      } else {
+        calcState.outdoorCount = count;
+        document.getElementById('outdoor-count-disp').textContent = count + ' كاميرا';
+      }
+      recalculateQuote();
+    }
+
+    function updateCables(val) {
+      calcState.cableMeters = parseInt(val, 10);
+      document.getElementById('cable-meters-disp').textContent = val + ' متر';
+      recalculateQuote();
+    }
+
+    function updateTrenchMeters(val) {
+      calcState.trenchMeters = parseInt(val, 10);
+      document.getElementById('trench-meters-disp').textContent = `${val} متر (+${val * 35} ج)`;
+      recalculateQuote();
+    }
+
+    function setStorage(size) {
+      calcState.storageTb = size;
+      ['1tb', '2tb', '4tb', '8tb'].forEach(s => {
+        const btn = document.getElementById('btn-hdd-' + s);
+        if (s === size) {
+          btn.className = 'py-2 rounded-lg border-2 border-cyan-500 bg-cyan-500/10 text-white font-bold';
+        } else {
+          btn.className = 'py-2 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 font-bold hover:bg-slate-800';
+        }
+      });
+      recalculateQuote();
+    }
+
+    function recalculateQuote() {
+      const totalCams = calcState.indoorCount + calcState.outdoorCount;
+      const camPrice = calcState.resolution === '2mp' ? 750 : calcState.resolution === '5mp' ? 1250 : 2100;
+      const camsTotal = totalCams * camPrice;
+
+      // DVR / NVR Channels
+      let dvrChannels = 4;
+      let dvrPrice = 1850;
+      if (totalCams > 16) { dvrChannels = 32; dvrPrice = 5800; }
+      else if (totalCams > 8) { dvrChannels = 16; dvrPrice = 3600; }
+      else if (totalCams > 4) { dvrChannels = 8; dvrPrice = 2650; }
+
+      // Hard Drive Price
+      const hddPrices = { '1tb': 1950, '2tb': 2750, '4tb': 4400, '8tb': 7600 };
+      const hddPrice = hddPrices[calcState.storageTb] || 2750;
+
+      // Cables & Trenching Surcharge
+      const cablePrice = calcState.cableMeters * 18;
+      const trenchSurcharge = calcState.trenchMeters * 35;
+
+      // PoE Switch
+      const poeSwitchCount = parseInt(document.getElementById('switch-selector')?.value || '1', 10);
+      calcState.poeSwitches = poeSwitchCount;
+      const switchPrice = poeSwitchCount === 1 ? 1250 : poeSwitchCount === 2 ? 2400 : 0;
+
+      // Installation & Labor
+      const labor = Math.max(800, totalCams * 250);
+
+      const grandTotal = camsTotal + dvrPrice + hddPrice + cablePrice + trenchSurcharge + switchPrice + labor;
+
+      // Update Breakdown UI
+      document.getElementById('dvr-summary-disp').textContent = `${dvrChannels} قنوات 4K`;
+      document.getElementById('total-cam-disp').textContent = `${totalCams} كاميرات (${calcState.indoorCount} داخلي + ${calcState.outdoorCount} خارجي)`;
+      document.getElementById('switch-summary-disp').textContent = poeSwitchCount > 0 ? `${poeSwitchCount} سويتش PoE` : 'كابلات مباشرة';
+      document.getElementById('cable-summary-disp').textContent = `${calcState.cableMeters}م كابل + ${calcState.trenchMeters}م حفر`;
+      document.getElementById('storage-summary-disp').textContent = `${calcState.storageTb.toUpperCase()} WD Purple`;
+      document.getElementById('labor-summary-disp').textContent = labor.toLocaleString('ar-EG') + ' ج';
+
+      animateCounter('quote-total-price', grandTotal);
+    }
+
+    function animateCounter(elementId, targetNumber) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const current = parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+      const step = (targetNumber - current) / 12;
+      let count = current;
+
+      const timer = setInterval(() => {
+        count += step;
+        if ((step > 0 && count >= targetNumber) || (step < 0 && count <= targetNumber) || Math.abs(step) < 1) {
+          el.textContent = targetNumber.toLocaleString('ar-EG');
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.round(count).toLocaleString('ar-EG');
+        }
+      }, 16);
+    }
+
+    // -------------------------------------------------------------
+    // E. Scalable Products Catalog & Cart System
+    // -------------------------------------------------------------
+    const PRODUCTS_CATALOG = {
+      cameras: [
+        { id: 'hik-5mp-colorvu', name: 'كاميرا هيكفيجن 5 ميجا ColorVu ألوان 24 ساعة', category: 'cameras', price: 1250, brand: 'Hikvision', image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&q=80', specs: 'عدسة 2.8 مم واسعة • صوت مايك مدمج' },
+        { id: 'dah-5mp-wizsense', name: 'كاميرا داهوا 5 ميجا WizSense ذكاء اصطناعي', category: 'cameras', price: 1180, brand: 'Dahua', image: 'https://images.unsplash.com/photo-1582139329536-e7284fece509?w=400&q=80', specs: 'تمييز دقيق للأشخاص • هيكل معدني IP67' },
+        { id: 'uniview-4k-ipc', name: 'كاميرا يوني فيو 4K Ultra HD شبكية IP', category: 'cameras', price: 1890, brand: 'Uniview', image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=400&q=80', specs: 'دقة فائقة 8 ميجا • رؤية ليلية 50 متر' }
+      ],
+      recorders: [
+        { id: 'dvr-8ch-hik', name: 'جهاز تسجيل هيكفيجن 8 قنوات AcuSense 4K', category: 'recorders', price: 2850, brand: 'Hikvision', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&q=80', specs: 'H.265+ • دعم كامل لكاميرات IP و Analog' },
+        { id: 'nvr-8ch-dahua', name: 'جهاز تسجيل شبكي NVR داهوا 8 قنوات PoE', category: 'recorders', price: 3400, brand: 'Dahua', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&q=80', specs: 'منافذ PoE مدمجة • فك تشفير 4K حقيقي' }
+      ],
+      storage: [
+        { id: 'hdd-2tb-purple', name: 'هارد ديسك 2 تيرابايت WD Purple أصلي', category: 'storage', price: 2750, brand: 'Western Digital', image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&q=80', specs: 'مخصص للمراقبة 24/7 • ضمان رسمي 3 سنوات' },
+        { id: 'hdd-4tb-skyhawk', name: 'هارد ديسك 4 تيرابايت Seagate SkyHawk AI', category: 'storage', price: 4400, brand: 'Seagate', image: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&q=80', specs: 'حساسات اهتزاز RV • متانة فائقة للأحمال' }
+      ],
+      switches: [
+        { id: 'poe-switch-4p', name: 'سويتش رويجي PoE 4-Port معدني احترافي', category: 'switches', price: 1250, brand: 'Ruijie Reyee', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&q=80', specs: 'دعم مسافات ممتدة حتى 250 متر • 60W PoE' },
+        { id: 'poe-switch-8p', name: 'سويتش رويجي PoE 8-Port جيجابت مدار', category: 'switches', price: 2400, brand: 'Ruijie Reyee', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&q=80', specs: '8 بورت PoE + 2 Uplink Gigabit • إدارة سحابية' },
+        { id: 'cable-cat6-sweden', name: 'لفة كابل شبكة UTP CAT6 نحاس نقي 100م', category: 'switches', price: 1650, brand: 'Sweden Pro', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80', specs: 'نحاس نقي 100% مناسب لكاميرات الـ IP و PoE' },
+        { id: 'junction-box-ip66', name: 'بواطة تجميع كاميرات مقاومة للماء IP66', category: 'switches', price: 65, brand: 'CamZone', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&q=80', specs: 'عزل تام للتوصيلات والبي إن سي والباور' }
+      ]
+    };
+
+    function getAllProducts() {
+      return [
+        ...PRODUCTS_CATALOG.cameras,
+        ...PRODUCTS_CATALOG.recorders,
+        ...PRODUCTS_CATALOG.storage,
+        ...PRODUCTS_CATALOG.switches
+      ];
+    }
+
+    let cart = [];
+    let savedOrders = [
+      { id: 'ORD-1092', customer: 'م. شريف عبد المنعم', phone: '01012984533', system: 'باقة 8 كاميرات 5MP هيكفيجن + سويتش PoE', total: 14200, status: 'جديد قيد المراجعة' },
+      { id: 'ORD-1091', customer: 'أحمد الباز (محل هدايا)', phone: '01148592011', system: 'باقة 4 كاميرات داهوا 2MP داخلية', total: 6850, status: 'تم التركيب' }
+    ];
+
+    function renderShop(category = 'all') {
+      const grid = document.getElementById('product-grid');
+      const all = getAllProducts();
+      const filtered = category === 'all' ? all : (PRODUCTS_CATALOG[category] || []);
+
+      grid.innerHTML = filtered.map(prod => `
+        <div class="rounded-xl glass-panel border border-slate-800 hover:border-cyan-500/40 transition overflow-hidden flex flex-col justify-between p-3.5 text-xs space-y-3">
+          <div>
+            <div class="relative h-36 rounded-lg bg-slate-950 overflow-hidden mb-2">
+              <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover opacity-90 hover:scale-105 transition duration-300">
+              <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-cyan-400 border border-slate-800">
+                ${prod.brand}
+              </span>
+            </div>
+            <h4 class="font-bold text-white text-xs line-clamp-2">${prod.name}</h4>
+            <p class="text-[11px] text-slate-400 mt-1">${prod.specs}</p>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+            <span class="font-black text-cyan-400 text-sm">${prod.price.toLocaleString('ar-EG')} ج</span>
+            <button onclick="addToCart('${prod.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs transition cursor-pointer flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>شراء</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function filterShop(cat) {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-cyan-500', 'text-slate-950');
+        btn.classList.add('bg-slate-900', 'text-slate-300');
+      });
+      event.target.classList.add('active', 'bg-cyan-500', 'text-slate-950');
+      event.target.classList.remove('bg-slate-900', 'text-slate-300');
+      renderShop(cat);
+    }
+
+    function addToCart(prodId) {
+      const all = getAllProducts();
+      const prod = all.find(p => p.id === prodId);
+      if (!prod) return;
+      const exist = cart.find(c => c.id === prodId);
+      if (exist) exist.qty++;
+      else cart.push({ ...prod, qty: 1 });
+      updateCartUI();
+      showNotification(`تمت إضافة "${prod.name}" إلى السلة`);
+    }
+
+    function addQuoteToCart() {
+      const totalCams = calcState.indoorCount + calcState.outdoorCount;
+      const finalTotalStr = document.getElementById('quote-total-price').textContent;
+      const finalTotal = parseInt(finalTotalStr.replace(/[^0-9]/g, ''), 10) || 13015;
+
+      const customBundle = {
+        id: 'bundle-' + Date.now(),
+        name: `منظومة كاملة (${calcState.brand.toUpperCase()} - ${totalCams} كاميرات - ${calcState.poeSwitches} سويتش PoE - كابلات وحفر)`,
+        price: finalTotal,
+        qty: 1,
+        image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&q=80',
+        specs: `${calcState.cableMeters}م كابل • ${calcState.trenchMeters}م حفر • ${calcState.storageTb.toUpperCase()} هارد ديسك`
+      };
+
+      cart.push(customBundle);
+      updateCartUI();
+      toggleCartDrawer();
+      showNotification('تمت إضافة عرض السعر المخصص إلى سلة المشتريات!');
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('cart-items-list');
+      const badge = document.getElementById('cart-badge');
+      const totalEl = document.getElementById('cart-total-price');
+
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      if (totalQty > 0) {
+        badge.textContent = totalQty;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      totalEl.textContent = totalPrice.toLocaleString('ar-EG') + ' ج.م';
+
+      if (cart.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-8 text-slate-500">
+            <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+            <p>سلة المشتريات فارغة حالياً</p>
+          </div>
+        `;
+      } else {
+        list.innerHTML = cart.map((item, index) => `
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center gap-2.5">
+              <img src="${item.image}" class="w-10 h-10 rounded-lg object-cover">
+              <div>
+                <h5 class="font-bold text-white text-[11px] line-clamp-1">${item.name}</h5>
+                <span class="text-cyan-400 font-bold">${item.price.toLocaleString('ar-EG')} ج × ${item.qty}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="changeCartQty(${index}, -1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold">-</button>
+              <span class="text-xs font-bold px-1">${item.qty}</span>
+              <button onclick="changeCartQty(${index}, 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      lucide.createIcons();
+    }
+
+    function changeCartQty(index, delta) {
+      if (!cart[index]) return;
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function toggleCartDrawer() {
+      document.getElementById('cart-drawer').classList.toggle('hidden');
+    }
+
+    function checkoutCart(e) {
+      e.preventDefault();
+      if (cart.length === 0) return alert('سلة المشتريات فارغة!');
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      // Record Order for Super Admin
+      savedOrders.unshift({
+        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+        customer: name,
+        phone: phone,
+        system: cart.map(i => `${i.name} (x${i.qty})`).join(', '),
+        total: total,
+        status: 'جديد قيد المراجعة'
+      });
+
+      cart = [];
+      updateCartUI();
+      toggleCartDrawer();
+      alert(`شكراً لك يا ${name}! تم تسجيل طلبك بنجاح برقم إلكتروني مؤكد.\nسيقوم مهندس الدعم بالاتصال بك على ${phone} لتأكيد ميعاد التسليم.`);
+    }
+
+    // -------------------------------------------------------------
+    // F. Super Admin Key Gate 🔑
+    // -------------------------------------------------------------
+    function openSuperAdminModal() {
+      document.getElementById('super-admin-modal').classList.remove('hidden');
+    }
+
+    function authenticateAdmin() {
+      const pin = document.getElementById('admin-passcode').value;
+      if (pin === 'camzone2026' || pin === 'admin') {
+        document.getElementById('admin-auth-view').classList.add('hidden');
+        document.getElementById('admin-dashboard-view').classList.remove('hidden');
+        renderAdminOrders();
+      } else {
+        alert('رمز المرور غير صحيح! الرمز الافتراضي للمعاينة: camzone2026');
+      }
+    }
+
+    function logoutAdmin() {
+      document.getElementById('admin-auth-view').classList.remove('hidden');
+      document.getElementById('admin-dashboard-view').classList.add('hidden');
+      document.getElementById('admin-passcode').value = '';
+    }
+
+    function renderAdminOrders() {
+      const list = document.getElementById('admin-orders-list');
+      list.innerHTML = savedOrders.map(o => `
+        <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
+          <div>
+            <div class="font-bold text-white">${o.customer} • <span class="text-cyan-400">${o.phone}</span></div>
+            <div class="text-[10px] text-slate-400">${o.system}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-bold text-amber-400">${o.total.toLocaleString('ar-EG')} ج</div>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px]">${o.status}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // -------------------------------------------------------------
+    // G. Technician & Auxiliary Form Handlers
+    // -------------------------------------------------------------
+    function submitTechForm(e) {
+      e.preventDefault();
+      const name = document.getElementById('tech-name').value.trim();
+      const phone = document.getElementById('tech-phone').value.trim();
+      const gov = document.getElementById('tech-gov').value;
+
+      savedOrders.unshift({
+        id: 'TECH-' + Math.floor(1000 + Math.random() * 9000),
+        customer: `[طلب فني] ${name} (${gov})`,
+        phone: phone,
+        system: 'اعتماد فني جديد وشراكة ميدانية',
+        total: 0,
+        status: 'قيد الاعتماد والمراجعة'
+      });
+
+      alert(`تم تسجيل طلب اعتمادك بنجاح يا م/ ${name}! سيتم التواصل معك هاتفياً من إدارة العمليات.`);
+      e.target.reset();
+    }
+
+    function openStorageModal() { document.getElementById('storage-modal').classList.remove('hidden'); runStorageCalculation(); }
+    function openPowerModal() { document.getElementById('power-modal').classList.remove('hidden'); runPowerCalculation(); }
+    function openSurveyModal() { document.getElementById('survey-modal').classList.remove('hidden'); }
+    function closeModals() {
+      document.querySelectorAll('#storage-modal, #power-modal, #survey-modal, #super-admin-modal').forEach(m => m.classList.add('hidden'));
+    }
+
+    function runStorageCalculation() {
+      const cams = parseInt(document.getElementById('calc-cam-num').value, 10) || 4;
+      const codec = document.getElementById('calc-codec').value;
+      const hddTb = parseInt(document.getElementById('calc-hdd-size').value, 10) || 2;
+      const gbPerCam = codec === 'h265plus' ? 12 : codec === 'h265' ? 22 : 40;
+      const days = Math.round((hddTb * 1000) / (cams * gbPerCam));
+      document.getElementById('storage-result-days').textContent = `${days} إلى ${Math.round(days * 1.25)} يوماً`;
+    }
+
+    function runPowerCalculation() {
+      const dist = parseInt(document.getElementById('calc-cable-dist').value, 10) || 45;
+      const cams = parseInt(document.getElementById('calc-power-cams').value, 10) || 4;
+      const voltDrop = (dist * 0.018).toFixed(1);
+      const isSafe = voltDrop < 1.5;
+
+      document.getElementById('power-calc-output').innerHTML = `
+        <div class="flex justify-between">
+          <span class="text-slate-400">الباور سبلاي المقترح:</span>
+          <span class="text-cyan-400 font-bold">${cams <= 4 ? '12V 10A' : '12V 20A'} مركزي</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">هبوط الجهد المحسوب:</span>
+          <span class="${isSafe ? 'text-emerald-400' : 'text-amber-400'} font-bold">${voltDrop} فولت (${isSafe ? 'آمن ومستقر' : 'يحتاج باور إضافي'})</span>
+        </div>
+      `;
+    }
+
+    function submitSurveyForm(e) {
+      e.preventDefault();
+      const name = document.getElementById('survey-name').value;
+      const phone = document.getElementById('survey-phone').value;
+      alert(`شكراً ${name}، تم حجز موعد المعاينة الهندسية المجانية! سيتصل بك المهندس المختص على ${phone}.`);
+      closeModals();
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    function showNotification(msg) {
+      const notif = document.createElement('div');
+      notif.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-black text-xs shadow-2xl shadow-cyan-500/30 transition duration-300 pointer-events-none';
+      notif.textContent = msg;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 2600);
+    }
+
+    // Initialize all modules on DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderShop();
+      recalculateQuote();
+      if (window.CamZone3D && typeof window.CamZone3D.init === 'function') {
+        setTimeout(window.CamZone3D.init, 250);
+      }
+    });
+  </script>
+</body>
+</html>
